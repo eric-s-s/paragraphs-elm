@@ -1,12 +1,37 @@
 module TestWord exposing (..)
 
-import Expect exposing (Expectation)
-import Fuzz exposing (Fuzzer, int, list, string)
+import Expect
 import Test exposing (..)
 
-import Word
+import Word exposing (Pronoun(..))
+import Word exposing (toValue)
 
 
-suite : Test
-suite =
-    test "some tags" (\_ -> Expect.equal Word.Definite  Word.Plural)
+pronounToStringTest : Test
+pronounToStringTest = 
+    describe "all pronoun string conversion"
+        [ test "base conversion" <|
+            (\_ ->
+                let
+                    pronouns = 
+                        [I, Me, You, He, Him, She, Her, We, Us, They, Them]
+                in
+                pronouns
+                    |> List.map toValue
+                    |> Expect.equal [
+                        "I",
+                        "Me",
+                        "You",
+                        "He",
+                        "Him",
+                        "She",
+                        "Her",
+                        "We",
+                        "Us",
+                        "They",
+                        "Them"
+                    ]
+
+            )
+
+        ]
