@@ -47,8 +47,8 @@ update msg model =
               Increment ->
                         model + 1
 
-    Decrement ->
-              model - 1
+              Decrement ->
+                  model - 1
 
 
 
