@@ -1,10 +1,12 @@
-module Example exposing (..)
+module TestWord exposing (..)
 
 import Expect exposing (Expectation)
 import Fuzz exposing (Fuzzer, int, list, string)
 import Test exposing (..)
 
+import Word
+
 
 suite : Test
 suite =
-    test "my cool test" (\_ -> Expect.equal (2+2) 5)
+    test "some tags" (\_ -> Expect.equal Word.Definite  Word.Plural)
