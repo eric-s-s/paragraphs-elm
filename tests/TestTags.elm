@@ -44,7 +44,8 @@ suite =
             )
         , test "has tag true" <|
             (\_ ->
-                hasTag (toTags [Tags.ThirdPerson, Tags.Uncountable]) Tags.Uncountable
+                Tags.Uncountable
+                |> hasTag (toTags [Tags.ThirdPerson, Tags.Uncountable])
                 |> Expect.equal True
             )
         , test "has tag false" <|
