@@ -3,11 +3,7 @@ module TestWord exposing (..)
 import Expect
 import Test exposing (..)
 
-import Word exposing (BasePronoun(..))
-import Word exposing (..)
-import Word exposing (Word(..))
-import Word exposing (Capitalized(..))
-import Word exposing (Noun(..))
+import Words.Word exposing (..)
 import List exposing (map)
 import String exposing (split)
 import String exposing (join)
@@ -49,7 +45,7 @@ pronounToStringTest =
                 in
                 pronouns
                     |> List.map (\el -> Pronoun el Capital)
-                    |> List.map Word.toString
+                    |> List.map toString
                     |> Expect.equal [
                         "I",
                         "Me",
@@ -75,7 +71,7 @@ pronounToStringTest =
                 in
                 pronouns
                     |> List.map (\el -> Pronoun el Lowercase)
-                    |> List.map Word.toString
+                    |> List.map toString
                     |> Expect.equal [
                         "I",
                         "me",
@@ -170,5 +166,36 @@ nounTest =
                     |> map (\el -> DefinitePluralNoun (BaseValue el) (IrregularPlural Nothing)) 
                     |> map toNounValue 
                     |> Expect.equal ["the lives", "the waifs", "the babies","the days", "the boboes", "the exes", "the dogs"]
+                )
+            , test "uncountable noun to value" <|
+                (\_ ->
+                    UncountableNoun (BaseValue "water") 
+                    |> toNounValue 
+                    |> Expect.equal "water"
+                )
+            , test "definite uncountable noun to value" <|
+                (\_ ->
+                    DefiniteUncountableNoun (BaseValue "water") 
+                    |> toNounValue 
+                    |> Expect.equal "the water"
+                )
+            , test "proper noun to value" <|
+                (\_ ->
+                    ProperNoun (BaseValue "Eric") 
+                    |> toNounValue 
+                    |> Expect.equal "Eric"
+                )
+            , test "proper plural noun to value" <|
+                (\_ ->
+                    ProperPluralNoun (BaseValue "the Bobs") 
+                    |> toNounValue 
+                    |> Expect.equal "the Bobs"
+                )
+            , test "incorrect noun to value" <|
+                (\_ ->
+                    ProperPluralNoun (BaseValue "the Bobs")
+                    |> IncorrectNoun "the the Bobs"
+                    |> toNounValue 
+                    |> Expect.equal "the the Bobs"
                 )
         ]

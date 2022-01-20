@@ -1,4 +1,4 @@
-module Word exposing (..)
+module Words.Word exposing (..)
 import Tags exposing (WordTag(..))
 import String exposing (endsWith)
 import String exposing (dropRight)
@@ -7,6 +7,7 @@ import List exposing (length)
 import List exposing (member)
 import String exposing (left)
 import String exposing (contains)
+import Dict exposing (values)
 
 
 type Capitalized = Capital | Lowercase
@@ -83,7 +84,7 @@ type Noun
     | PluralNoun BaseValue IrregularPlural
     | DefinitePluralNoun BaseValue IrregularPlural
     | UncountableNoun BaseValue
-    | DefiniteUncountable BaseValue
+    | DefiniteUncountableNoun BaseValue
     | ProperNoun BaseValue
     | ProperPluralNoun BaseValue
     | IncorrectNoun String Noun
@@ -91,7 +92,7 @@ type Noun
 toNounValue : Noun -> String
 toNounValue noun = 
     case noun of
-        IncorrectNoun value _ -> addPlural value
+        IncorrectNoun value _ -> value
         BaseNoun (BaseValue value) _ -> value
         IndefiniteNoun (BaseValue value) _ -> addIndefinteArticle value
         DefiniteNoun (BaseValue value) _ -> "the " ++ value
@@ -99,7 +100,10 @@ toNounValue noun =
         PluralNoun (BaseValue value) _ -> addPlural value
         DefinitePluralNoun _ (IrregularPlural (Just value)) -> "the " ++ value
         DefinitePluralNoun (BaseValue value) _ -> "the " ++ addPlural value
-        _ -> "foo"
+        UncountableNoun (BaseValue value) -> value
+        DefiniteUncountableNoun (BaseValue value) -> "the " ++ value
+        ProperNoun (BaseValue value) -> value
+        ProperPluralNoun (BaseValue value) -> value
         
 addIndefinteArticle: String -> String
 addIndefinteArticle word = 
