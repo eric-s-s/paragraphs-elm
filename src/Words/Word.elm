@@ -8,6 +8,7 @@ import List exposing (member)
 import String exposing (left)
 import String exposing (contains)
 import Dict exposing (values)
+import Char exposing (toUpper)
 
 
 type Capitalized = Capital | Lowercase
@@ -48,31 +49,31 @@ toSubject base =
 
 
 
-toValue : BasePronoun -> String
-toValue value = 
+pronounToString : BasePronoun -> String
+pronounToString value = 
   case value of
     I -> "I"
-    Me -> "Me"
-    You -> "You"
-    He -> "He"
-    Him -> "Him"
-    She -> "She"
-    Her -> "Her"
-    It -> "It"
-    We -> "We"
-    Us -> "Us"
-    They -> "They"
-    Them -> "Them"
+    Me -> "me"
+    You -> "you"
+    He -> "he"
+    Him -> "him"
+    She -> "she"
+    Her -> "her"
+    It -> "it"
+    We -> "we"
+    Us -> "us"
+    They -> "they"
+    Them -> "them"
 
 type Word = 
   Pronoun BasePronoun Capitalized
 
-toString : Word -> String
-toString value = 
+wordToString : Word -> String
+wordToString value = 
   case value of
-    Pronoun base Capital -> toValue base
+    Pronoun base Capital -> pronounToString base |> capitalize
     Pronoun I Lowercase -> "I"
-    Pronoun base Lowercase -> String.toLower <| toValue base
+    Pronoun base Lowercase -> pronounToString base
 
 type BaseValue = BaseValue String
 type IrregularPlural = IrregularPlural (Maybe String)
@@ -89,8 +90,20 @@ type Noun
     | ProperPluralNoun BaseValue
     | IncorrectNoun String Noun
 
-toNounValue : Noun -> String
-toNounValue noun = 
+toDefinite : Noun -> Noun
+toDefinite noun = 
+    case noun of
+        BaseNoun a b -> DefiniteNoun a b
+        IndefiniteNoun a b -> DefiniteNoun a b
+        PluralNoun a b -> DefinitePluralNoun a b
+        UncountableNoun a -> DefiniteUncountableNoun a
+        ProperNoun _ -> IncorrectNoun ("the " ++ nounToString noun) noun
+        ProperPluralNoun _ -> IncorrectNoun ("the " ++ nounToString noun) noun
+        IncorrectNoun value original -> IncorrectNoun ("the " ++ value) original
+        _ -> noun
+
+nounToString : Noun -> String
+nounToString noun = 
     case noun of
         IncorrectNoun value _ -> value
         BaseNoun (BaseValue value) _ -> value
@@ -124,6 +137,15 @@ addPlural word =
     else
         addS word
 
+addS : String -> String
+addS word =
+    if needsEs word then
+        word ++ "es"
+    else if isYLongVowel word then
+        (dropRight 1 word) ++ "ies"
+    else
+        word ++ "s"
+
 isYLongVowel : String -> Bool
 isYLongVowel word = 
     let
@@ -136,12 +158,9 @@ isYLongVowel word =
 needsEs : String -> Bool
 needsEs word = any (\el -> endsWith el word) ["s", "z", "ch", "sh", "x", "o"]
 
-addS : String -> String
-addS word =
-    if needsEs word then
-        word ++ "es"
-    else if isYLongVowel word then
-        (dropRight 1 word) ++ "ies"
-    else
-        word ++ "s"
+capitalize : String -> String
+capitalize word = 
+    case (String.toList word) of
+        [] -> ""
+        char:: chars -> (toUpper char):: chars |> String.fromList 
 
