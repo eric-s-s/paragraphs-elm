@@ -219,6 +219,9 @@ toIndefinite noun =
         DefiniteNoun a b ->
             IndefiniteNoun a b
 
+        IndefiniteNoun _ _ ->
+            noun
+
         PluralNoun _ _ ->
             IncorrectNoun (nounToIndefiniteString noun) noun
 
@@ -226,7 +229,7 @@ toIndefinite noun =
             IncorrectNoun (nounToIndefiniteString (PluralNoun a b)) noun
 
         _ ->
-            noun
+            IncorrectNoun (toOriginalNoun noun |> nounToIndefiniteString) noun
 
 
 nounToIndefiniteString : Noun -> String

@@ -271,6 +271,38 @@ testToIndefinite =
                 nouns
                     |> map toIndefinite
                     |> Expect.equal (List.map2 (\a b -> IncorrectNoun a b) [ "a cats", "an owls" ] nouns)
+        , test "uncountable" <|
+            \_ ->
+                let
+                    nouns =
+                        [ UncountableNoun (BaseNoun "water")
+                        , DefiniteUncountableNoun (BaseNoun "unstuff")
+                        ]
+                in
+                nouns
+                    |> map toIndefinite
+                    |> Expect.equal
+                        (List.map2
+                            (\a b -> IncorrectNoun a b)
+                            [ "a water", "an unstuff" ]
+                            nouns
+                        )
+        , test "proper" <|
+            \_ ->
+                let
+                    nouns =
+                        [ ProperNoun (BaseNoun "Eric")
+                        , ProperPluralNoun (BaseNoun "BMWs")
+                        ]
+                in
+                nouns
+                    |> map toIndefinite
+                    |> Expect.equal
+                        (List.map2
+                            (\a b -> IncorrectNoun a b)
+                            [ "an Eric", "a BMWs" ]
+                            nouns
+                        )
         ]
 
 
