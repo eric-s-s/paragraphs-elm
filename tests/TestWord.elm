@@ -351,5 +351,44 @@ testToDefinite =
         ]
 
 
-
--- indefinte, plural, basic
+testToPlural : Test
+testToPlural =
+    describe "test convert to plural nouns"
+        [ test "plural, definite plural, proper plural unchanged" <|
+            \_ ->
+                let
+                    nouns =
+                        [ PluralNoun baseValue plural
+                        , DefinitePluralNoun baseValue plural
+                        , ProperPluralNoun baseValue
+                        ]
+                in
+                nouns
+                    |> map toPlural
+                    |> Expect.equal nouns
+        , test "basic to plural" <|
+            \_ ->
+                BasicNoun baseValue plural
+                    |> toPlural
+                    |> Expect.equal (PluralNoun baseValue plural)
+        , test "definite to definite plural" <|
+            \_ ->
+                DefiniteNoun baseValue plural
+                    |> toPlural
+                    |> Expect.equal (DefinitePluralNoun baseValue plural)
+        , test "proper to incorrect" <|
+            \_ ->
+                ProperNoun (BaseNoun "Jody")
+                    |> toPlural
+                    |> Expect.equal (IncorrectNoun "Jodies" (ProperNoun (BaseNoun "Jody")))
+        , test "uncountable to incorrect" <|
+            \_ ->
+                UncountableNoun (BaseNoun "fizz")
+                    |> toPlural
+                    |> Expect.equal (IncorrectNoun "fizzes" (UncountableNoun (BaseNoun "fizz")))
+        , test "definite uncountable to incorrect" <|
+            \_ ->
+                DefiniteUncountableNoun (BaseNoun "fizz")
+                    |> toPlural
+                    |> Expect.equal (IncorrectNoun "the fizzes" (DefiniteUncountableNoun (BaseNoun "fizz")))
+        ]

@@ -223,21 +223,47 @@ toIndefinite noun =
             noun
 
         PluralNoun _ _ ->
-            IncorrectNoun (nounToIndefiniteString noun) noun
+            IncorrectNoun (noun |> nounToIndefiniteStringHelper) noun
 
         DefinitePluralNoun a b ->
-            IncorrectNoun (nounToIndefiniteString (PluralNoun a b)) noun
+            IncorrectNoun (PluralNoun a b |> nounToIndefiniteStringHelper) noun
 
         _ ->
-            IncorrectNoun (toOriginalNoun noun |> nounToIndefiniteString) noun
+            IncorrectNoun (toOriginalNoun noun |> nounToIndefiniteStringHelper) noun
 
 
-nounToIndefiniteString : Noun -> String
-nounToIndefiniteString noun =
-    noun
-        |> addIndefinteArticle
-        << (\(RawValue str) -> str)
-        << nounToRawValue
+toPlural : Noun -> Noun
+toPlural noun =
+    case noun of
+        BasicNoun a b ->
+            PluralNoun a b
+
+        DefiniteNoun a b ->
+            DefinitePluralNoun a b
+
+        ProperNoun _ ->
+            IncorrectNoun (noun |> nounToPluralStringHelper) noun
+
+        UncountableNoun _ ->
+            IncorrectNoun (noun |> nounToPluralStringHelper) noun
+
+        DefiniteUncountableNoun _ ->
+            IncorrectNoun (noun |> nounToPluralStringHelper) noun
+
+        _ ->
+            noun
+
+
+nounToStringHelper =
+    nounToRawValue >> (\(RawValue str) -> str)
+
+
+nounToPluralStringHelper =
+    addPlural << nounToStringHelper
+
+
+nounToIndefiniteStringHelper =
+    addIndefinteArticle << nounToStringHelper
 
 
 nounToRawValue : Noun -> RawValue
