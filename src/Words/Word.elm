@@ -220,16 +220,21 @@ toIndefinite noun =
             IndefiniteNoun a b
 
         PluralNoun _ _ ->
-            IncorrectNoun
-                (noun
-                    |> addIndefinteArticle
-                    << (\(RawValue str) -> str)
-                    << nounToRawValue
-                )
-                noun
+            IncorrectNoun (nounToIndefiniteString noun) noun
+
+        DefinitePluralNoun a b ->
+            IncorrectNoun (nounToIndefiniteString (PluralNoun a b)) noun
 
         _ ->
             noun
+
+
+nounToIndefiniteString : Noun -> String
+nounToIndefiniteString noun =
+    noun
+        |> addIndefinteArticle
+        << (\(RawValue str) -> str)
+        << nounToRawValue
 
 
 nounToRawValue : Noun -> RawValue

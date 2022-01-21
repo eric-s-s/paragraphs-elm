@@ -261,6 +261,16 @@ testToIndefinite =
                 nouns
                     |> map toIndefinite
                     |> Expect.equal (List.map2 (\a b -> IncorrectNoun a b) [ "a dogs", "an apes" ] nouns)
+        , test "definite plural" <|
+            \_ ->
+                let
+                    nouns =
+                        [ "cat", "owl" ]
+                            |> map (\el -> DefinitePluralNoun (BaseNoun el) (IrregularPlural Nothing))
+                in
+                nouns
+                    |> map toIndefinite
+                    |> Expect.equal (List.map2 (\a b -> IncorrectNoun a b) [ "a cats", "an owls" ] nouns)
         ]
 
 
