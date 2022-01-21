@@ -210,6 +210,28 @@ toDefinite noun =
             noun
 
 
+toIndefinite : Noun -> Noun
+toIndefinite noun =
+    case noun of
+        BasicNoun a b ->
+            IndefiniteNoun a b
+
+        DefiniteNoun a b ->
+            IndefiniteNoun a b
+
+        PluralNoun _ _ ->
+            IncorrectNoun
+                (noun
+                    |> addIndefinteArticle
+                    << (\(RawValue str) -> str)
+                    << nounToRawValue
+                )
+                noun
+
+        _ ->
+            noun
+
+
 nounToRawValue : Noun -> RawValue
 nounToRawValue noun =
     case noun of

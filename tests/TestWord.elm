@@ -242,6 +242,28 @@ testToOriginal =
         ]
 
 
+testToIndefinite : Test
+testToIndefinite =
+    describe "convert nouns to indefinite"
+        [ test "base, indefinite, definite noun" <|
+            \_ ->
+                [ BasicNoun, IndefiniteNoun, DefiniteNoun ]
+                    |> map (\el -> el baseValue plural)
+                    |> map toIndefinite
+                    |> Expect.equal (List.repeat 3 (IndefiniteNoun baseValue plural))
+        , test "plural" <|
+            \_ ->
+                let
+                    nouns =
+                        [ "dog", "ape" ]
+                            |> map (\el -> PluralNoun (BaseNoun el) (IrregularPlural Nothing))
+                in
+                nouns
+                    |> map toIndefinite
+                    |> Expect.equal (List.map2 (\a b -> IncorrectNoun a b) [ "a dogs", "an apes" ] nouns)
+        ]
+
+
 testToDefinite : Test
 testToDefinite =
     describe "convert nouns to definite"
