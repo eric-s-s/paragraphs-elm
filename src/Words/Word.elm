@@ -157,6 +157,31 @@ type Noun
     | IncorrectNoun String Noun
 
 
+toOriginalNoun : Noun -> Noun
+toOriginalNoun noun =
+    case noun of
+        IndefiniteNoun a b ->
+            BasicNoun a b
+
+        DefiniteNoun a b ->
+            BasicNoun a b
+
+        PluralNoun a b ->
+            BasicNoun a b
+
+        DefinitePluralNoun a b ->
+            BasicNoun a b
+
+        DefiniteUncountableNoun a ->
+            UncountableNoun a
+
+        IncorrectNoun _ a ->
+            toOriginalNoun a
+
+        _ ->
+            noun
+
+
 toDefinite : Noun -> Noun
 toDefinite noun =
     case noun of
@@ -183,6 +208,62 @@ toDefinite noun =
 
         _ ->
             noun
+
+
+toIndefinite : Noun -> Noun
+toIndefinite noun =
+    case noun of
+        BasicNoun a b ->
+            IndefiniteNoun a b
+
+        DefiniteNoun a b ->
+            IndefiniteNoun a b
+
+        IndefiniteNoun _ _ ->
+            noun
+
+        PluralNoun _ _ ->
+            IncorrectNoun (noun |> nounToIndefiniteStringHelper) noun
+
+        DefinitePluralNoun a b ->
+            IncorrectNoun (PluralNoun a b |> nounToIndefiniteStringHelper) noun
+
+        _ ->
+            IncorrectNoun (toOriginalNoun noun |> nounToIndefiniteStringHelper) noun
+
+
+toPlural : Noun -> Noun
+toPlural noun =
+    case noun of
+        BasicNoun a b ->
+            PluralNoun a b
+
+        DefiniteNoun a b ->
+            DefinitePluralNoun a b
+
+        ProperNoun _ ->
+            IncorrectNoun (noun |> nounToPluralStringHelper) noun
+
+        UncountableNoun _ ->
+            IncorrectNoun (noun |> nounToPluralStringHelper) noun
+
+        DefiniteUncountableNoun _ ->
+            IncorrectNoun (noun |> nounToPluralStringHelper) noun
+
+        _ ->
+            noun
+
+
+nounToStringHelper =
+    nounToRawValue >> (\(RawValue str) -> str)
+
+
+nounToPluralStringHelper =
+    addPlural << nounToStringHelper
+
+
+nounToIndefiniteStringHelper =
+    addIndefinteArticle << nounToStringHelper
 
 
 nounToRawValue : Noun -> RawValue
