@@ -10,10 +10,27 @@ import String exposing (contains)
 import Dict exposing (values)
 import Char exposing (toUpper)
 
+type Word
+    = Pronoun Pronoun
+    | Noun Noun
 
-type Capitalized = Capital | Lowercase
+type RawValue = RawValue String
 
-type BasePronoun
+wordToValue: Word -> RawValue
+wordToValue word = 
+    case word of
+        Pronoun x -> pronounToRawValue x
+        Noun x -> nounToRawValue x
+        -- _ -> RawValue "hello"
+
+type FormattedWord
+    = BaseWord Word
+    | Bold Word
+    | CapitalOoooooops Word
+    | BoldCapital Word
+
+
+type Pronoun
     = I
     | Me
     | You
@@ -27,7 +44,7 @@ type BasePronoun
     | They
     | Them
 
-toObject : BasePronoun -> BasePronoun
+toObject : Pronoun -> Pronoun
 toObject base = 
     case base of
         I -> Me
@@ -37,7 +54,7 @@ toObject base =
         They -> Them
         _ -> base
 
-toSubject : BasePronoun -> BasePronoun
+toSubject : Pronoun -> Pronoun
 toSubject base = 
     case base of
         Me -> I
@@ -47,77 +64,66 @@ toSubject base =
         Them -> They
         _ -> base
 
-
-
-pronounToString : BasePronoun -> String
-pronounToString value = 
+pronounToRawValue : Pronoun -> RawValue
+pronounToRawValue value = 
   case value of
-    I -> "I"
-    Me -> "me"
-    You -> "you"
-    He -> "he"
-    Him -> "him"
-    She -> "she"
-    Her -> "her"
-    It -> "it"
-    We -> "we"
-    Us -> "us"
-    They -> "they"
-    Them -> "them"
+    I -> "I" |> RawValue
+    Me -> "me" |> RawValue
+    You -> "you" |> RawValue
+    He -> "he" |> RawValue
+    Him -> "him" |> RawValue
+    She -> "she" |> RawValue
+    Her -> "her" |> RawValue
+    It -> "it" |> RawValue
+    We -> "we" |> RawValue
+    Us -> "us" |> RawValue
+    They -> "they" |> RawValue
+    Them -> "them" |> RawValue
 
-type Word = 
-  Pronoun BasePronoun Capitalized
-
-wordToString : Word -> String
-wordToString value = 
-  case value of
-    Pronoun base Capital -> pronounToString base |> capitalize
-    Pronoun I Lowercase -> "I"
-    Pronoun base Lowercase -> pronounToString base
-
-type BaseValue = BaseValue String
+type BaseNoun = BaseNoun String
 type IrregularPlural = IrregularPlural (Maybe String)
 
 type Noun
-    = BaseNoun BaseValue IrregularPlural
-    | IndefiniteNoun BaseValue IrregularPlural
-    | DefiniteNoun BaseValue IrregularPlural
-    | PluralNoun BaseValue IrregularPlural
-    | DefinitePluralNoun BaseValue IrregularPlural
-    | UncountableNoun BaseValue
-    | DefiniteUncountableNoun BaseValue
-    | ProperNoun BaseValue
-    | ProperPluralNoun BaseValue
+    = BasicNoun BaseNoun IrregularPlural
+    | IndefiniteNoun BaseNoun IrregularPlural
+    | DefiniteNoun BaseNoun IrregularPlural
+    | PluralNoun BaseNoun IrregularPlural
+    | DefinitePluralNoun BaseNoun IrregularPlural
+    | UncountableNoun BaseNoun
+    | DefiniteUncountableNoun BaseNoun
+    | ProperNoun BaseNoun
+    | ProperPluralNoun BaseNoun
     | IncorrectNoun String Noun
 
 toDefinite : Noun -> Noun
 toDefinite noun = 
     case noun of
-        BaseNoun a b -> DefiniteNoun a b
+        BasicNoun a b -> DefiniteNoun a b
         IndefiniteNoun a b -> DefiniteNoun a b
         PluralNoun a b -> DefinitePluralNoun a b
         UncountableNoun a -> DefiniteUncountableNoun a
-        ProperNoun _ -> IncorrectNoun ("the " ++ nounToString noun) noun
-        ProperPluralNoun _ -> IncorrectNoun ("the " ++ nounToString noun) noun
+        ProperNoun (BaseNoun a) -> IncorrectNoun ("the " ++ a) noun
+        ProperPluralNoun (BaseNoun a) -> IncorrectNoun ("the " ++ a) noun
         IncorrectNoun value original -> IncorrectNoun ("the " ++ value) original
         _ -> noun
 
-nounToString : Noun -> String
-nounToString noun = 
+nounToRawValue : Noun -> RawValue
+nounToRawValue noun = 
     case noun of
-        IncorrectNoun value _ -> value
-        BaseNoun (BaseValue value) _ -> value
-        IndefiniteNoun (BaseValue value) _ -> addIndefinteArticle value
-        DefiniteNoun (BaseValue value) _ -> "the " ++ value
-        PluralNoun _ (IrregularPlural (Just value)) -> value
-        PluralNoun (BaseValue value) _ -> addPlural value
-        DefinitePluralNoun _ (IrregularPlural (Just value)) -> "the " ++ value
-        DefinitePluralNoun (BaseValue value) _ -> "the " ++ addPlural value
-        UncountableNoun (BaseValue value) -> value
-        DefiniteUncountableNoun (BaseValue value) -> "the " ++ value
-        ProperNoun (BaseValue value) -> value
-        ProperPluralNoun (BaseValue value) -> value
-        
+        IncorrectNoun value _               ->  value |> RawValue
+        BasicNoun (BaseNoun value) _        ->  value |> RawValue
+        IndefiniteNoun (BaseNoun value) _   ->  addIndefinteArticle value |> RawValue
+        DefiniteNoun (BaseNoun value) _     ->  "the " ++ value |> RawValue
+        PluralNoun _ (IrregularPlural (Just value)) 
+            ->  value |> RawValue
+        PluralNoun (BaseNoun value) _       ->  addPlural value |> RawValue
+        DefinitePluralNoun _ (IrregularPlural (Just value)) 
+            ->  "the " ++ value |> RawValue
+        DefinitePluralNoun (BaseNoun value) _ ->  "the " ++ addPlural value |> RawValue
+        UncountableNoun (BaseNoun value)    ->  value |> RawValue
+        DefiniteUncountableNoun (BaseNoun value) ->  "the " ++ value |> RawValue
+        ProperNoun (BaseNoun value)         ->  value |> RawValue
+        ProperPluralNoun (BaseNoun value)   ->  value |> RawValue
 addIndefinteArticle: String -> String
 addIndefinteArticle word = 
     if contains (left 1 word) "aeiouAEIOU" then
