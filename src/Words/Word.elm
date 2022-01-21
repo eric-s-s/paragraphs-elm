@@ -157,6 +157,31 @@ type Noun
     | IncorrectNoun String Noun
 
 
+toOriginalNoun : Noun -> Noun
+toOriginalNoun noun =
+    case noun of
+        IndefiniteNoun a b ->
+            BasicNoun a b
+
+        DefiniteNoun a b ->
+            BasicNoun a b
+
+        PluralNoun a b ->
+            BasicNoun a b
+
+        DefinitePluralNoun a b ->
+            BasicNoun a b
+
+        DefiniteUncountableNoun a ->
+            UncountableNoun a
+
+        IncorrectNoun _ a ->
+            toOriginalNoun a
+
+        _ ->
+            noun
+
+
 toDefinite : Noun -> Noun
 toDefinite noun =
     case noun of

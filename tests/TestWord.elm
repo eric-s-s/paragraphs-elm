@@ -172,6 +172,76 @@ plural =
     IrregularPlural <| Just "nonsensicals"
 
 
+testToOriginal : Test
+testToOriginal =
+    describe "test converting nouns to their most basic format" <|
+        [ test "basic to basic" <|
+            \_ ->
+                BasicNoun baseValue plural
+                    |> toOriginalNoun
+                    |> Expect.equal (BasicNoun baseValue plural)
+        , test "indefinite to basic" <|
+            \_ ->
+                IndefiniteNoun baseValue plural
+                    |> toOriginalNoun
+                    |> Expect.equal (BasicNoun baseValue plural)
+        , test "definite to basic" <|
+            \_ ->
+                DefiniteNoun baseValue plural
+                    |> toOriginalNoun
+                    |> Expect.equal (BasicNoun baseValue plural)
+        , test "plural to basic" <|
+            \_ ->
+                PluralNoun baseValue plural
+                    |> toOriginalNoun
+                    |> Expect.equal (BasicNoun baseValue plural)
+        , test "definite plural to basic" <|
+            \_ ->
+                DefinitePluralNoun baseValue plural
+                    |> toOriginalNoun
+                    |> Expect.equal (BasicNoun baseValue plural)
+        , test "uncountable to uncountable" <|
+            \_ ->
+                UncountableNoun baseValue
+                    |> toOriginalNoun
+                    |> Expect.equal (UncountableNoun baseValue)
+        , test "definite uncountable to uncountable" <|
+            \_ ->
+                DefiniteUncountableNoun baseValue
+                    |> toOriginalNoun
+                    |> Expect.equal (UncountableNoun baseValue)
+        , test "proper to proper" <|
+            \_ ->
+                ProperNoun baseValue
+                    |> toOriginalNoun
+                    |> Expect.equal (ProperNoun baseValue)
+        , test "proper plural to proper plural" <|
+            \_ ->
+                ProperPluralNoun baseValue
+                    |> toOriginalNoun
+                    |> Expect.equal (ProperPluralNoun baseValue)
+        , test "incorrect noun to container nouns basic form" <|
+            \_ ->
+                let
+                    nouns =
+                        [ BasicNoun baseValue plural
+                        , IndefiniteNoun baseValue plural
+                        , DefiniteNoun baseValue plural
+                        , PluralNoun baseValue plural
+                        , DefinitePluralNoun baseValue plural
+                        , UncountableNoun baseValue
+                        , DefiniteUncountableNoun baseValue
+                        , ProperNoun baseValue
+                        , ProperPluralNoun baseValue
+                        ]
+                in
+                nouns
+                    |> map (\el -> IncorrectNoun "something" el)
+                    |> map toOriginalNoun
+                    |> Expect.equal (nouns |> map toOriginalNoun)
+        ]
+
+
 testToDefinite : Test
 testToDefinite =
     describe "convert nouns to definite"
