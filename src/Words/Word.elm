@@ -141,7 +141,8 @@ type BaseNoun
 
 
 type IrregularPlural
-    = IrregularPlural (Maybe String)
+    = NoIrregularPlural
+    | IrregularPlural String
 
 
 type Noun
@@ -281,13 +282,13 @@ nounToRawValue noun =
         DefiniteNoun (BaseNoun value) _ ->
             "the " ++ value |> RawValue
 
-        PluralNoun _ (IrregularPlural (Just value)) ->
+        PluralNoun _ (IrregularPlural value) ->
             value |> RawValue
 
         PluralNoun (BaseNoun value) _ ->
             addPlural value |> RawValue
 
-        DefinitePluralNoun _ (IrregularPlural (Just value)) ->
+        DefinitePluralNoun _ (IrregularPlural value) ->
             "the " ++ value |> RawValue
 
         DefinitePluralNoun (BaseNoun value) _ ->
@@ -332,11 +333,12 @@ addPlural word =
 
 
 type Infinitive
-    = BaseVerb String
+    = Infinitive String
 
 
 type IrregularPast
-    = IrregularPast (Maybe String)
+    = NoIrregularPast
+    | IrregularPast String
 
 
 type Verb
@@ -354,6 +356,8 @@ verbToRawValue verb =
     case verb of
         IncorrectVerb value _ ->
             value |> RawValue
+
+        BasicVerb (Infinitive value) _ -> value |> RawValue
 
         _ ->
             RawValue "foo"
