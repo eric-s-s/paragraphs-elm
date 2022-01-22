@@ -241,17 +241,17 @@ toPlural noun =
         DefiniteNoun a b ->
             DefinitePluralNoun a b
 
-        ProperNoun _ ->
-            IncorrectNoun (noun |> nounToPluralStringHelper) noun
+        PluralNoun _ _ ->
+            noun
 
-        UncountableNoun _ ->
-            IncorrectNoun (noun |> nounToPluralStringHelper) noun
+        DefinitePluralNoun _ _ ->
+            noun
 
-        DefiniteUncountableNoun _ ->
-            IncorrectNoun (noun |> nounToPluralStringHelper) noun
+        ProperPluralNoun _ ->
+            noun
 
         _ ->
-            noun
+            IncorrectNoun (noun |> nounToPluralStringHelper) noun
 
 
 nounToStringHelper =
@@ -329,6 +329,34 @@ addPlural word =
 
     else
         addS word
+
+
+type Infinitive
+    = BaseVerb String
+
+
+type IrregularPast
+    = IrregularPast (Maybe String)
+
+
+type Verb
+    = IncorrectVerb String Verb
+    | BasicVerb Infinitive IrregularPast
+    | Negative Infinitive IrregularPast
+    | ThirdPerson Infinitive IrregularPast
+    | ThirdPersonNegative Infinitive IrregularPast
+    | Past Infinitive IrregularPast
+    | PastNegative Infinitive IrregularPast
+
+
+verbToRawValue : Verb -> RawValue
+verbToRawValue verb =
+    case verb of
+        IncorrectVerb value _ ->
+            value |> RawValue
+
+        _ ->
+            RawValue "foo"
 
 
 addS : String -> String
