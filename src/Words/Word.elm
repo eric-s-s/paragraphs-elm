@@ -357,7 +357,17 @@ verbToRawValue verb =
         IncorrectVerb value _ ->
             value |> RawValue
 
-        BasicVerb (Infinitive value) _ -> value |> RawValue
+        BasicVerb (Infinitive value) _ ->
+            value |> RawValue
+
+        Negative (Infinitive value) _ ->
+            "don't " ++ value |> RawValue
+
+        ThirdPerson (Infinitive "have") _ ->
+            "has" |> RawValue
+
+        ThirdPerson (Infinitive value) _ ->
+            addS value |> RawValue
 
         _ ->
             RawValue "foo"

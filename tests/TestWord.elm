@@ -386,10 +386,47 @@ testVerb : Test
 testVerb =
     describe "testing Verb"
         [ describe "toRawValue"
-            [ test "BasicVerb" <|
+            [ test "IncorrectVerb" <|
+                \_ ->
+                    BasicVerb (Infinitive "eat") NoIrregularPast
+                        |> IncorrectVerb "ooooops"
+                        |> verbToRawValue
+                        |> Expect.equal (RawValue "ooooops")
+            , test "BasicVerb" <|
                 \_ ->
                     BasicVerb (Infinitive "eat") NoIrregularPast
                         |> verbToRawValue
                         |> Expect.equal (RawValue "eat")
+            , test "NegativeVerb" <|
+                \_ ->
+                    Negative (Infinitive "eat") NoIrregularPast
+                        |> verbToRawValue
+                        |> Expect.equal (RawValue "don't eat")
             ]
+        , test "ThirdPerson add s" <|
+            \_ ->
+                [ "eat", "play", "know", "see" ]
+                    |> map (\el -> ThirdPerson (Infinitive el) NoIrregularPast)
+                    |> map verbToRawValue
+                    |> map testHelperRawValueToString
+                    |> Expect.equal [ "eats", "plays", "knows", "sees" ]
+        , test "ThirdPerson add es" <|
+            \_ ->
+                [ "fix", "go", "pass", "watch", "wash", "fuzz" ]
+                    |> map (\el -> ThirdPerson (Infinitive el) NoIrregularPast)
+                    |> map verbToRawValue
+                    |> map testHelperRawValueToString
+                    |> Expect.equal [ "fixes", "goes", "passes", "watches", "washes", "fuzzes" ]
+        , test "ThirdPerson add ies" <|
+            \_ ->
+                [ "try", "baby" ]
+                    |> map (\el -> ThirdPerson (Infinitive el) NoIrregularPast)
+                    |> map verbToRawValue
+                    |> map testHelperRawValueToString
+                    |> Expect.equal [ "tries", "babies" ]
+        , test "ThirdPerson have has" <|
+            \_ ->
+                ThirdPerson (Infinitive "have") NoIrregularPast
+                    |> verbToRawValue
+                    |> Expect.equal (RawValue "has")
         ]
