@@ -1,7 +1,7 @@
 module Words.Word exposing (..)
 
 import Char exposing (toUpper)
-import List exposing (any, member)
+import List exposing (any)
 import String exposing (contains, dropRight, endsWith, left, right)
 
 
@@ -12,6 +12,10 @@ type Word
 
 type RawValue
     = RawValue String
+
+
+getString =
+    \(RawValue el) -> el
 
 
 wordToValue : Word -> RawValue
@@ -81,13 +85,36 @@ beVerbToRawValue beVerb =
             "were" |> RawValue
 
 
+beVerbToPast : BeVerb -> BeVerb
+beVerbToPast beVerb =
+    case beVerb of
+        Is ->
+            Was
+
+        Am ->
+            Was
+
+        Are ->
+            Were
+
+        _ ->
+            beVerb
+
+
 type NegativeBeVerb
     = NegativeBeVerb BeVerb
 
 
 negativeBeVerbToRawValue : NegativeBeVerb -> RawValue
 negativeBeVerbToRawValue (NegativeBeVerb beVerb) =
-    " not" |> (beVerb |> beVerbToRawValue |> (\(RawValue el) -> el |> String.append)) |> RawValue
+    (beVerb |> beVerbToRawValue >> getString)
+        ++ " not"
+        |> RawValue
+
+
+negativeBeVerbToPast : NegativeBeVerb -> NegativeBeVerb
+negativeBeVerbToPast (NegativeBeVerb beVerb) =
+    beVerb |> beVerbToPast |> NegativeBeVerb
 
 
 type Pronoun
@@ -309,7 +336,7 @@ toPlural noun =
 
 
 nounToStringHelper =
-    nounToRawValue >> (\(RawValue str) -> str)
+    nounToRawValue >> getString
 
 
 nounToPluralStringHelper =
@@ -488,7 +515,7 @@ toPast verb =
 
 
 verbToStringHelper =
-    verbToRawValue >> (\(RawValue el) -> el)
+    verbToRawValue >> getString
 
 
 verbToRawValue : Verb -> RawValue

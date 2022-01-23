@@ -696,20 +696,35 @@ testPunctuation =
 
 testBeVerb : Test
 testBeVerb =
-    test "positive" <|
-        \_ ->
-            [ Is, Am, Are, Was, Were ]
-                |> map beVerbToRawValue
-                |> map testHelperRawValueToString
-                |> Expect.equal [ "is", "am", "are", "was", "were" ]
+    describe "BeVerb tests"
+        [ test "beVerbToRawValue" <|
+            \_ ->
+                [ Is, Am, Are, Was, Were ]
+                    |> map beVerbToRawValue
+                    |> map testHelperRawValueToString
+                    |> Expect.equal [ "is", "am", "are", "was", "were" ]
+        , test "beVerbToPast" <|
+            \_ ->
+                [ Is, Am, Are, Was, Were ]
+                    |> map beVerbToPast
+                    |> Expect.equal [ Was, Was, Were, Was, Were ]
+        ]
 
 
 testNegativeBeVerb : Test
 testNegativeBeVerb =
-    test "negativeBeVerbToRawValue" <|
-        \_ ->
-            [ Is, Am, Are, Was, Were ]
-                |> map NegativeBeVerb
-                |> map negativeBeVerbToRawValue
-                |> map testHelperRawValueToString
-                |> Expect.equal [ "is not", "am not", "are not", "was not", "were not" ]
+    describe "test NegativeBeVerb"
+        [ test "negativeBeVerbToRawValue" <|
+            \_ ->
+                [ Is, Am, Are, Was, Were ]
+                    |> map NegativeBeVerb
+                    |> map negativeBeVerbToRawValue
+                    |> map testHelperRawValueToString
+                    |> Expect.equal [ "is not", "am not", "are not", "was not", "were not" ]
+        , test "negatvieBeVerbToPast" <|
+            \_ ->
+                [ Is, Am, Are, Was, Were ]
+                    |> map NegativeBeVerb
+                    |> map negativeBeVerbToPast
+                    |> Expect.equal (map NegativeBeVerb [ Was, Was, Were, Was, Were ])
+        ]
