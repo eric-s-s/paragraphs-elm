@@ -1,10 +1,8 @@
 module Words.Word exposing (..)
 
 import Char exposing (toUpper)
-import Dict exposing (values)
-import List exposing (any, length, member)
-import String exposing (contains, dropRight, endsWith, left)
-import Tags exposing (WordTag(..))
+import List exposing (any, member)
+import String exposing (contains, dropRight, endsWith, left, right)
 
 
 type Word
@@ -24,10 +22,6 @@ wordToValue word =
 
         Noun x ->
             nounToRawValue x
-
-
-
--- _ -> RawValue "hello"
 
 
 type FormattedWord
@@ -141,7 +135,8 @@ type BaseNoun
 
 
 type IrregularPlural
-    = IrregularPlural (Maybe String)
+    = NoIrregularPlural
+    | IrregularPlural String
 
 
 type Noun
@@ -241,17 +236,17 @@ toPlural noun =
         DefiniteNoun a b ->
             DefinitePluralNoun a b
 
-        ProperNoun _ ->
-            IncorrectNoun (noun |> nounToPluralStringHelper) noun
+        PluralNoun _ _ ->
+            noun
 
-        UncountableNoun _ ->
-            IncorrectNoun (noun |> nounToPluralStringHelper) noun
+        DefinitePluralNoun _ _ ->
+            noun
 
-        DefiniteUncountableNoun _ ->
-            IncorrectNoun (noun |> nounToPluralStringHelper) noun
+        ProperPluralNoun _ ->
+            noun
 
         _ ->
-            noun
+            IncorrectNoun (noun |> nounToPluralStringHelper) noun
 
 
 nounToStringHelper =
@@ -281,13 +276,13 @@ nounToRawValue noun =
         DefiniteNoun (BaseNoun value) _ ->
             "the " ++ value |> RawValue
 
-        PluralNoun _ (IrregularPlural (Just value)) ->
+        PluralNoun _ (IrregularPlural value) ->
             value |> RawValue
 
         PluralNoun (BaseNoun value) _ ->
             addPlural value |> RawValue
 
-        DefinitePluralNoun _ (IrregularPlural (Just value)) ->
+        DefinitePluralNoun _ (IrregularPlural value) ->
             "the " ++ value |> RawValue
 
         DefinitePluralNoun (BaseNoun value) _ ->
@@ -331,6 +326,192 @@ addPlural word =
         addS word
 
 
+type Infinitive
+    = Infinitive String
+
+
+type IrregularPast
+    = NoIrregularPast
+    | IrregularPast String
+
+
+type Verb
+    = IncorrectVerb String Verb
+    | BasicVerb Infinitive IrregularPast
+    | Negative Infinitive IrregularPast
+    | ThirdPerson Infinitive IrregularPast
+    | ThirdPersonNegative Infinitive IrregularPast
+    | Past Infinitive IrregularPast
+    | PastNegative Infinitive IrregularPast
+
+
+toOriginalVerb : Verb -> Verb
+toOriginalVerb verb =
+    case verb of
+        BasicVerb a b ->
+            BasicVerb a b
+
+        Negative a b ->
+            BasicVerb a b
+
+        ThirdPerson a b ->
+            BasicVerb a b
+
+        ThirdPersonNegative a b ->
+            BasicVerb a b
+
+        Past a b ->
+            BasicVerb a b
+
+        PastNegative a b ->
+            BasicVerb a b
+
+        IncorrectVerb _ other ->
+            toOriginalVerb other
+
+
+toThirdPerson : Verb -> Verb
+toThirdPerson verb =
+    case verb of
+        BasicVerb a b ->
+            ThirdPerson a b
+
+        Negative a b ->
+            ThirdPersonNegative a b
+
+        Past _ _ ->
+            IncorrectVerb (verb |> verbToStringHelper >> addS) verb
+
+        PastNegative _ _ ->
+            IncorrectVerb (verb |> verbToStringHelper >> addS) verb
+
+        _ ->
+            verb
+
+
+toNegative : Verb -> Verb
+toNegative verb =
+    case verb of
+        BasicVerb a b ->
+            Negative a b
+
+        ThirdPerson a b ->
+            ThirdPersonNegative a b
+
+        Past a b ->
+            PastNegative a b
+
+        _ ->
+            verb
+
+
+toPast : Verb -> Verb
+toPast verb =
+    case verb of
+        BasicVerb a b ->
+            Past a b
+
+        Negative a b ->
+            PastNegative a b
+
+        ThirdPerson _ _ ->
+            IncorrectVerb (verb |> toOriginalVerb >> toPast >> verbToStringHelper >> addS) verb
+
+        ThirdPersonNegative _ _ ->
+            IncorrectVerb
+                ("doesn't "
+                    ++ (verbToStringHelper << toPast << toOriginalVerb <| verb)
+                )
+                verb
+
+        _ ->
+            verb
+
+
+verbToStringHelper =
+    verbToRawValue >> (\(RawValue el) -> el)
+
+
+verbToRawValue : Verb -> RawValue
+verbToRawValue verb =
+    case verb of
+        IncorrectVerb value _ ->
+            value |> RawValue
+
+        BasicVerb (Infinitive value) _ ->
+            value |> RawValue
+
+        Negative (Infinitive value) _ ->
+            "don't " ++ value |> RawValue
+
+        ThirdPerson (Infinitive "have") _ ->
+            "has" |> RawValue
+
+        ThirdPerson (Infinitive value) _ ->
+            addS value |> RawValue
+
+        ThirdPersonNegative (Infinitive value) _ ->
+            "doesn't " ++ value |> RawValue
+
+        Past _ (IrregularPast value) ->
+            value |> RawValue
+
+        Past (Infinitive value) _ ->
+            addEd value |> RawValue
+
+        PastNegative (Infinitive value) _ ->
+            "didn't " ++ value |> RawValue
+
+
+addEd : String -> String
+addEd word =
+    if isYLongVowel word then
+        dropRight 1 word ++ "ied"
+
+    else if endsWithShortVowelAndConsonant word then
+        word ++ right 1 word ++ "ed"
+
+    else if endsWith "e" word then
+        word ++ "d"
+
+    else
+        word ++ "ed"
+
+
+endsWithShortVowelAndConsonant : String -> Bool
+endsWithShortVowelAndConsonant word =
+    (isCharAtIndexAVowel -2 <| word)
+        && not (isCharAtIndexAVowelPlus -1 <| word)
+        && not (isCharAtIndexAVowel -3 <| word)
+
+
+isCharAtIndexAVowel =
+    isCharAtIndexInPool "aeiou"
+
+
+isCharAtIndexAVowelPlus =
+    isCharAtIndexInPool "aeiouyw"
+
+
+isCharAtIndexInPool : String -> Int -> String -> Bool
+isCharAtIndexInPool pool index toTest =
+    case getCharAtIndex index toTest of
+        Nothing ->
+            False
+
+        Just char ->
+            String.toList pool |> List.member char
+
+
+getCharAtIndex : Int -> String -> Maybe Char
+getCharAtIndex index word =
+    if index == -1 then
+        right 1 word |> String.toList |> List.head
+
+    else
+        String.slice index (index + 1) word |> String.toList |> List.head
+
+
 addS : String -> String
 addS word =
     if needsEs word then
@@ -352,7 +533,7 @@ isYLongVowel word =
     endsWith "y" word
         && String.length word
         > 1
-        && not (List.member (String.right 2 word) endings)
+        && not (List.member (right 2 word) endings)
 
 
 needsEs : String -> Bool
