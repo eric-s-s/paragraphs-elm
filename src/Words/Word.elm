@@ -394,6 +394,22 @@ toThirdPerson verb =
             verb
 
 
+toNegative : Verb -> Verb
+toNegative verb =
+    case verb of
+        BasicVerb a b ->
+            Negative a b
+
+        ThirdPerson a b ->
+            ThirdPersonNegative a b
+
+        Past a b ->
+            PastNegative a b
+
+        _ ->
+            verb
+
+
 verbToStringHelper =
     verbToRawValue >> (\(RawValue el) -> el)
 

@@ -572,6 +572,35 @@ testVerb =
                         |> map toThirdPerson
                         |> Expect.equal original
             ]
+        , describe "toNegative"
+            [ test "BasicVerb to Negative" <|
+                \_ ->
+                    BasicVerb infinitive NoIrregularPast
+                        |> toNegative
+                        |> Expect.equal (Negative infinitive NoIrregularPast)
+            , test "ThirdPerson to ThirdPersonNegative" <|
+                \_ ->
+                    ThirdPerson infinitive NoIrregularPast
+                        |> toNegative
+                        |> Expect.equal (ThirdPersonNegative infinitive NoIrregularPast)
+            , test "Past to PastNegative" <|
+                \_ ->
+                    Past infinitive NoIrregularPast
+                        |> toNegative
+                        |> Expect.equal (PastNegative infinitive NoIrregularPast)
+            , test "any Negative to Itself" <|
+                \_ ->
+                    let
+                        original =
+                            [ Negative infinitive NoIrregularPast
+                            , ThirdPersonNegative infinitive NoIrregularPast
+                            , PastNegative infinitive NoIrregularPast
+                            ]
+                    in
+                    original
+                        |> map toNegative
+                        |> Expect.equal original
+            ]
 
-        -- go -> don't go, goes -> doesn't go, went -> didn't go, 
+        -- go -> don't go, goes -> doesn't go, went -> didn't go,
         ]
