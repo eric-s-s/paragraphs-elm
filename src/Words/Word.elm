@@ -4,7 +4,6 @@ import Char exposing (toUpper)
 import Dict exposing (toList, values)
 import List exposing (any, length, member)
 import String exposing (contains, dropRight, endsWith, left, right)
-import Tags exposing (WordTag(..))
 
 
 type Word
@@ -351,6 +350,31 @@ type Verb
     | PastNegative Infinitive IrregularPast
 
 
+toOriginalVerb : Verb -> Verb
+toOriginalVerb verb =
+    case verb of
+        BasicVerb a b ->
+            BasicVerb a b
+
+        Negative a b ->
+            BasicVerb a b
+
+        ThirdPerson a b ->
+            BasicVerb a b
+
+        ThirdPersonNegative a b ->
+            BasicVerb a b
+
+        Past a b ->
+            BasicVerb a b
+
+        PastNegative a b ->
+            BasicVerb a b
+
+        IncorrectVerb _ other ->
+            toOriginalVerb other
+
+
 verbToRawValue : Verb -> RawValue
 verbToRawValue verb =
     case verb of
@@ -382,18 +406,6 @@ verbToRawValue verb =
             "didn't " ++ value |> RawValue
 
 
-addS : String -> String
-addS word =
-    if needsEs word then
-        word ++ "es"
-
-    else if isYLongVowel word then
-        dropRight 1 word ++ "ies"
-
-    else
-        word ++ "s"
-
-
 addEd : String -> String
 addEd word =
     if isYLongVowel word then
@@ -407,33 +419,6 @@ addEd word =
 
     else
         word ++ "ed"
-
-
-isYLongVowel : String -> Bool
-isYLongVowel word =
-    let
-        endings =
-            [ "ay", "ey", "iy", "oy", "uy" ]
-    in
-    endsWith "y" word
-        && String.length word
-        > 1
-        && not (List.member (String.right 2 word) endings)
-
-
-needsEs : String -> Bool
-needsEs word =
-    any (\el -> endsWith el word) [ "s", "z", "ch", "sh", "x", "o" ]
-
-
-capitalize : String -> String
-capitalize word =
-    case String.toList word of
-        [] ->
-            ""
-
-        char :: chars ->
-            toUpper char :: chars |> String.fromList
 
 
 endsWithShortVowelAndConsonant : String -> Bool
@@ -468,3 +453,42 @@ getCharAtIndex index word =
 
     else
         String.slice index (index + 1) word |> String.toList |> List.head
+
+
+addS : String -> String
+addS word =
+    if needsEs word then
+        word ++ "es"
+
+    else if isYLongVowel word then
+        dropRight 1 word ++ "ies"
+
+    else
+        word ++ "s"
+
+
+isYLongVowel : String -> Bool
+isYLongVowel word =
+    let
+        endings =
+            [ "ay", "ey", "iy", "oy", "uy" ]
+    in
+    endsWith "y" word
+        && String.length word
+        > 1
+        && not (List.member (String.right 2 word) endings)
+
+
+needsEs : String -> Bool
+needsEs word =
+    any (\el -> endsWith el word) [ "s", "z", "ch", "sh", "x", "o" ]
+
+
+capitalize : String -> String
+capitalize word =
+    case String.toList word of
+        [] ->
+            ""
+
+        char :: chars ->
+            toUpper char :: chars |> String.fromList

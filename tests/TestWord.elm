@@ -382,6 +382,10 @@ testNoun =
         ]
 
 
+infinitive =
+    Infinitive "somerandomaction"
+
+
 testVerb : Test
 testVerb =
     describe "testing Verb"
@@ -498,5 +502,24 @@ testVerb =
                         |> verbToRawValue
                         |> testHelperRawValueToString
                         |> Expect.equal "didn't abc"
+            ]
+        , describe "toOriginalVerb"
+            [ test "BasicVerb to BasicVerb" <|
+                \_ ->
+                    BasicVerb (Infinitive "abc") (IrregularPast "def")
+                        |> toOriginalVerb
+                        |> Expect.equal (BasicVerb (Infinitive "abc") (IrregularPast "def"))
+            , test "Negative, ThirdPerson, ThirdPersonNegative, Past, PastNegative to BasicVerb" <|
+                \_ ->
+                    [ Negative, ThirdPerson, ThirdPersonNegative, Past, PastNegative ]
+                        |> map (\el -> el infinitive NoIrregularPast)
+                        |> map toOriginalVerb
+                        |> Expect.equal (List.repeat 5 (BasicVerb infinitive NoIrregularPast))
+            , test "IncorrectVerb to BasicVerb" <|
+                \_ ->
+                    [ Negative, ThirdPerson, ThirdPersonNegative, Past, PastNegative ]
+                        |> map (\el -> IncorrectVerb "ooops" (el infinitive NoIrregularPast))
+                        |> map toOriginalVerb
+                        |> Expect.equal (List.repeat 5 (BasicVerb infinitive NoIrregularPast))
             ]
         ]
