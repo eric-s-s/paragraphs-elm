@@ -1,8 +1,7 @@
 module Words.Word exposing (..)
 
 import Char exposing (toUpper)
-import Dict exposing (toList, values)
-import List exposing (any, length, member)
+import List exposing (any, member)
 import String exposing (contains, dropRight, endsWith, left, right)
 
 
@@ -23,10 +22,6 @@ wordToValue word =
 
         Noun x ->
             nounToRawValue x
-
-
-
--- _ -> RawValue "hello"
 
 
 type FormattedWord
@@ -538,7 +533,7 @@ isYLongVowel word =
     endsWith "y" word
         && String.length word
         > 1
-        && not (List.member (String.right 2 word) endings)
+        && not (List.member (right 2 word) endings)
 
 
 needsEs : String -> Bool
