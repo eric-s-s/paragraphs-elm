@@ -600,7 +600,65 @@ testVerb =
                     original
                         |> map toNegative
                         |> Expect.equal original
+            , describe "toPast"
+                [ test "BasicVerb to Past" <|
+                    \_ ->
+                        BasicVerb infinitive NoIrregularPast
+                            |> toPast
+                            |> Expect.equal (Past infinitive NoIrregularPast)
+                , test "Negative to PastNegative" <|
+                    \_ ->
+                        Negative infinitive NoIrregularPast
+                            |> toPast
+                            |> Expect.equal (PastNegative infinitive NoIrregularPast)
+                , test "ThirdPerson to Incorrect no irregular" <|
+                    \_ ->
+                        let
+                            original =
+                                ThirdPerson (Infinitive "play") NoIrregularPast
+                        in
+                        original
+                            |> toPast
+                            |> Expect.equal (IncorrectVerb "playeds" original)
+                , test "ThirdPerson to Incorrect irregular" <|
+                    \_ ->
+                        let
+                            original =
+                                ThirdPerson infinitive (IrregularPast "went")
+                        in
+                        original
+                            |> toPast
+                            |> Expect.equal (IncorrectVerb "wents" original)
+                , test "ThirdPersonNegative to Incorrect no irregular" <|
+                    \_ ->
+                        let
+                            original =
+                                ThirdPersonNegative (Infinitive "play") NoIrregularPast
+                        in
+                        original
+                            |> toPast
+                            |> Expect.equal (IncorrectVerb "doesn't played" original)
+                , test "ThirdPersonNegative to Incorrect irregular" <|
+                    \_ ->
+                        let
+                            original =
+                                ThirdPersonNegative infinitive (IrregularPast "went")
+                        in
+                        original
+                            |> toPast
+                            |> Expect.equal (IncorrectVerb "doesn't went" original)
+                , test "Past to Past" <|
+                    \_ ->
+                        Past infinitive NoIrregularPast
+                            |> toPast
+                            |> Expect.equal (Past infinitive NoIrregularPast)
+                , test "PastNegative to PastNegative" <|
+                    \_ ->
+                        PastNegative infinitive NoIrregularPast
+                            |> toPast
+                            |> Expect.equal (PastNegative infinitive NoIrregularPast)
+                ]
             ]
 
-        -- go -> don't go, goes -> doesn't go, went -> didn't go,
+        -- go -> went, goes -> wents, don't go -> didn't go, doesn't go -> doesn't went
         ]

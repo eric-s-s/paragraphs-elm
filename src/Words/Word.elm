@@ -385,10 +385,10 @@ toThirdPerson verb =
             ThirdPersonNegative a b
 
         Past _ _ ->
-            IncorrectVerb (verb |> verbToStringHelper |> addS) verb
+            IncorrectVerb (verb |> verbToStringHelper >> addS) verb
 
         PastNegative _ _ ->
-            IncorrectVerb (verb |> verbToStringHelper |> addS) verb
+            IncorrectVerb (verb |> verbToStringHelper >> addS) verb
 
         _ ->
             verb
@@ -405,6 +405,29 @@ toNegative verb =
 
         Past a b ->
             PastNegative a b
+
+        _ ->
+            verb
+
+
+toPast : Verb -> Verb
+toPast verb =
+    case verb of
+        BasicVerb a b ->
+            Past a b
+
+        Negative a b ->
+            PastNegative a b
+
+        ThirdPerson _ _ ->
+            IncorrectVerb (verb |> toOriginalVerb >> toPast >> verbToStringHelper >> addS) verb
+
+        ThirdPersonNegative _ _ ->
+            IncorrectVerb
+                ("doesn't "
+                    ++ (verbToStringHelper << toPast << toOriginalVerb <| verb)
+                )
+                verb
 
         _ ->
             verb
