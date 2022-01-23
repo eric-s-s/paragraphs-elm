@@ -522,4 +522,56 @@ testVerb =
                         |> map toOriginalVerb
                         |> Expect.equal (List.repeat 5 (BasicVerb infinitive NoIrregularPast))
             ]
+        , describe "toThirdPerson"
+            [ test "BasicVerb to ThirdPerson" <|
+                \_ ->
+                    BasicVerb infinitive NoIrregularPast
+                        |> toThirdPerson
+                        |> Expect.equal (ThirdPerson infinitive NoIrregularPast)
+            , test "Negative to ThirdPersonNegative" <|
+                \_ ->
+                    Negative infinitive NoIrregularPast
+                        |> toThirdPerson
+                        |> Expect.equal (ThirdPersonNegative infinitive NoIrregularPast)
+            , test "Past to IncorrectVerb regular past" <|
+                \_ ->
+                    let
+                        original =
+                            Past (Infinitive "play") NoIrregularPast
+                    in
+                    original
+                        |> toThirdPerson
+                        |> Expect.equal (IncorrectVerb "playeds" original)
+            , test "Past to IncorrectVerb irregular past" <|
+                \_ ->
+                    let
+                        original =
+                            Past infinitive (IrregularPast "went")
+                    in
+                    original
+                        |> toThirdPerson
+                        |> Expect.equal (IncorrectVerb "wents" original)
+            , test "PastNegative to IncorrectVerb" <|
+                \_ ->
+                    let
+                        original =
+                            PastNegative (Infinitive "play") NoIrregularPast
+                    in
+                    original
+                        |> toThirdPerson
+                        |> Expect.equal (IncorrectVerb "didn't plays" original)
+            , test "any ThirdPerson to Itself" <|
+                \_ ->
+                    let
+                        original =
+                            [ ThirdPerson infinitive NoIrregularPast
+                            , ThirdPersonNegative infinitive NoIrregularPast
+                            ]
+                    in
+                    original
+                        |> map toThirdPerson
+                        |> Expect.equal original
+            ]
+
+        -- go -> don't go, goes -> doesn't go, went -> didn't go, 
         ]

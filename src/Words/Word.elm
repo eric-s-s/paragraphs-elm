@@ -375,6 +375,29 @@ toOriginalVerb verb =
             toOriginalVerb other
 
 
+toThirdPerson : Verb -> Verb
+toThirdPerson verb =
+    case verb of
+        BasicVerb a b ->
+            ThirdPerson a b
+
+        Negative a b ->
+            ThirdPersonNegative a b
+
+        Past _ _ ->
+            IncorrectVerb (verb |> verbToStringHelper |> addS) verb
+
+        PastNegative _ _ ->
+            IncorrectVerb (verb |> verbToStringHelper |> addS) verb
+
+        _ ->
+            verb
+
+
+verbToStringHelper =
+    verbToRawValue >> (\(RawValue el) -> el)
+
+
 verbToRawValue : Verb -> RawValue
 verbToRawValue verb =
     case verb of
