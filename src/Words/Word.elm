@@ -31,6 +31,65 @@ type FormattedWord
     | BoldCapital Word
 
 
+type Punctuation
+    = Period
+    | ExclamationPoint
+    | QuestionMark
+    | Comma
+
+
+punctuationToRawValue : Punctuation -> RawValue
+punctuationToRawValue punctuation =
+    case punctuation of
+        Period ->
+            "." |> RawValue
+
+        ExclamationPoint ->
+            "!" |> RawValue
+
+        QuestionMark ->
+            "?" |> RawValue
+
+        Comma ->
+            "," |> RawValue
+
+
+type BeVerb
+    = Is
+    | Am
+    | Are
+    | Was
+    | Were
+
+
+beVerbToRawValue : BeVerb -> RawValue
+beVerbToRawValue beVerb =
+    case beVerb of
+        Is ->
+            "is" |> RawValue
+
+        Am ->
+            "am" |> RawValue
+
+        Are ->
+            "are" |> RawValue
+
+        Was ->
+            "was" |> RawValue
+
+        Were ->
+            "were" |> RawValue
+
+
+type NegativeBeVerb
+    = NegativeBeVerb BeVerb
+
+
+negativeBeVerbToRawValue : NegativeBeVerb -> RawValue
+negativeBeVerbToRawValue (NegativeBeVerb beVerb) =
+    beVerbToRawValue beVerb
+
+
 type Pronoun
     = I
     | Me

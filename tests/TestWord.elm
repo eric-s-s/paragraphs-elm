@@ -12,34 +12,6 @@ testHelperRawValueToString (RawValue string) =
     string
 
 
-testPronounToRawValue : Test
-testPronounToRawValue =
-    describe "pronouns to raw values"
-        [ test "to raw values" <|
-            \_ ->
-                [ I, Me, You, He, Him, She, Her, It, We, Us, They, Them ]
-                    |> List.map pronounToRawValue
-                    |> List.map testHelperRawValueToString
-                    |> Expect.equal
-                        [ "I"
-                        , "me"
-                        , "you"
-                        , "he"
-                        , "him"
-                        , "she"
-                        , "her"
-                        , "it"
-                        , "we"
-                        , "us"
-                        , "they"
-                        , "them"
-                        ]
-        , test "as word" <|
-            \_ ->
-                Pronoun I |> wordToValue |> Expect.equal (RawValue "I")
-        ]
-
-
 testHelperNounToString : Noun -> String
 testHelperNounToString =
     nounToRawValue >> testHelperRawValueToString
@@ -382,6 +354,7 @@ testNoun =
         ]
 
 
+infinitive : Infinitive
 infinitive =
     Infinitive "somerandomaction"
 
@@ -659,6 +632,84 @@ testVerb =
                             |> Expect.equal (PastNegative infinitive NoIrregularPast)
                 ]
             ]
-
-        -- go -> went, goes -> wents, don't go -> didn't go, doesn't go -> doesn't went
         ]
+
+
+testPronoun : Test
+testPronoun =
+    describe "test Pronou"
+        [ test "to raw values" <|
+            \_ ->
+                [ I, Me, You, He, Him, She, Her, It, We, Us, They, Them ]
+                    |> List.map pronounToRawValue
+                    |> List.map testHelperRawValueToString
+                    |> Expect.equal
+                        [ "I"
+                        , "me"
+                        , "you"
+                        , "he"
+                        , "him"
+                        , "she"
+                        , "her"
+                        , "it"
+                        , "we"
+                        , "us"
+                        , "they"
+                        , "them"
+                        ]
+        , describe "test toSubbject"
+            [ test "unchanged" <|
+                \_ ->
+                    [ I, You, He, She, It, We, They ]
+                        |> map toSubject
+                        |> Expect.equal [ I, You, He, She, It, We, They ]
+            , test "changed" <|
+                \_ ->
+                    [ Me, Him, Her, Us, Them ]
+                        |> map toSubject
+                        |> Expect.equal [ I, He, She, We, They ]
+            ]
+        , describe "test toObject"
+            [ test "unchanged" <|
+                \_ ->
+                    [ Me, You, Him, Her, It, Us, Them ]
+                        |> map toObject
+                        |> Expect.equal [ Me, You, Him, Her, It, Us, Them ]
+            , test "changed" <|
+                \_ ->
+                    [ I, He, She, We, They ]
+                        |> map toObject
+                        |> Expect.equal [ Me, Him, Her, Us, Them ]
+            ]
+        ]
+
+
+testPunctuation : Test
+testPunctuation =
+    test "punctuationToRawValue" <|
+        \_ ->
+            [ Period, ExclamationPoint, QuestionMark, Comma ]
+                |> map punctuationToRawValue
+                |> map testHelperRawValueToString
+                |> Expect.equal [ ".", "!", "?", "," ]
+
+
+testBeVerb : Test
+testBeVerb =
+    test "positive" <|
+        \_ ->
+            [ Is, Am, Are, Was, Were ]
+                |> map beVerbToRawValue
+                |> map testHelperRawValueToString
+                |> Expect.equal [ "is", "am", "are", "was", "were" ]
+
+
+testNegativeBeVerb : Test
+testNegativeBeVerb =
+    test "negativeBeVerbToRawValue" <|
+        \_ ->
+            [ Is, Am, Are, Was, Were ]
+                |> map NegativeBeVerb
+                |> map negativeBeVerbToRawValue
+                |> map testHelperRawValueToString
+                |> Expect.equal [ "is not", "am not", "are not", "was not", "were not" ]
