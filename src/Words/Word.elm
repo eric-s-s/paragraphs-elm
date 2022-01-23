@@ -87,7 +87,7 @@ type NegativeBeVerb
 
 negativeBeVerbToRawValue : NegativeBeVerb -> RawValue
 negativeBeVerbToRawValue (NegativeBeVerb beVerb) =
-    beVerbToRawValue beVerb
+    " not" |> (beVerb |> beVerbToRawValue |> (\(RawValue el) -> el |> String.append)) |> RawValue
 
 
 type Pronoun
