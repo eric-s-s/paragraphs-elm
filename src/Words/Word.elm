@@ -1,9 +1,9 @@
 module Words.Word exposing (..)
 
 import Char exposing (toUpper)
-import Dict exposing (values)
+import Dict exposing (toList, values)
 import List exposing (any, length, member)
-import String exposing (contains, dropRight, endsWith, left)
+import String exposing (contains, dropRight, endsWith, left, right)
 import Tags exposing (WordTag(..))
 
 
@@ -369,8 +369,17 @@ verbToRawValue verb =
         ThirdPerson (Infinitive value) _ ->
             addS value |> RawValue
 
-        _ ->
-            RawValue "foo"
+        ThirdPersonNegative (Infinitive value) _ ->
+            "doesn't " ++ value |> RawValue
+
+        Past _ (IrregularPast value) ->
+            value |> RawValue
+
+        Past (Infinitive value) _ ->
+            addEd value |> RawValue
+
+        PastNegative (Infinitive value) _ ->
+            "didn't " ++ value |> RawValue
 
 
 addS : String -> String
@@ -383,6 +392,21 @@ addS word =
 
     else
         word ++ "s"
+
+
+addEd : String -> String
+addEd word =
+    if isYLongVowel word then
+        dropRight 1 word ++ "ied"
+
+    else if endsWithShortVowelAndConsonant word then
+        word ++ right 1 word ++ "ed"
+
+    else if endsWith "e" word then
+        word ++ "d"
+
+    else
+        word ++ "ed"
 
 
 isYLongVowel : String -> Bool
@@ -410,3 +434,39 @@ capitalize word =
 
         char :: chars ->
             toUpper char :: chars |> String.fromList
+
+
+endsWithShortVowelAndConsonant : String -> Bool
+endsWithShortVowelAndConsonant word =
+    if (isCharAtIndexAVowel -2 <| word) && not (isCharAtIndexAVowelPlus -1 <| word) then
+        not (isCharAtIndexAVowel -3 <| word)
+
+    else
+        False
+
+
+isCharAtIndexAVowel =
+    isCharAtIndexInPool "aeiou"
+
+
+isCharAtIndexAVowelPlus =
+    isCharAtIndexInPool "aeiouyw"
+
+
+isCharAtIndexInPool : String -> Int -> String -> Bool
+isCharAtIndexInPool pool index toTest =
+    case getCharAtIndex index toTest of
+        Nothing ->
+            False
+
+        Just char ->
+            String.toList pool |> List.member char
+
+
+getCharAtIndex : Int -> String -> Maybe Char
+getCharAtIndex index word =
+    if index == -1 then
+        right 1 word |> String.toList |> List.head
+
+    else
+        String.slice index (index + 1) word |> String.toList |> List.head
