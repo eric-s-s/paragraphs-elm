@@ -478,6 +478,13 @@ testVerb =
                             |> map verbToRawValue
                             |> map testHelperRawValueToString
                             |> Expect.equal [ "liked", "peed", "shoed" ]
+                , test "edge cases" <|
+                    \_ ->
+                        [ "", "a", "b" ]
+                            |> map (\el -> Past (Infinitive el) NoIrregularPast)
+                            |> map verbToRawValue
+                            |> map testHelperRawValueToString
+                            |> Expect.equal [ "ed", "aed", "bed" ]
                 , test "irregular verb" <|
                     \_ ->
                         Past (Infinitive "abc") (IrregularPast "went")

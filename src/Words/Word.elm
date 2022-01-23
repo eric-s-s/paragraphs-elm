@@ -438,11 +438,9 @@ capitalize word =
 
 endsWithShortVowelAndConsonant : String -> Bool
 endsWithShortVowelAndConsonant word =
-    if (isCharAtIndexAVowel -2 <| word) && not (isCharAtIndexAVowelPlus -1 <| word) then
-        not (isCharAtIndexAVowel -3 <| word)
-
-    else
-        False
+    (isCharAtIndexAVowel -2 <| word)
+        && not (isCharAtIndexAVowelPlus -1 <| word)
+        && not (isCharAtIndexAVowel -3 <| word)
 
 
 isCharAtIndexAVowel =
