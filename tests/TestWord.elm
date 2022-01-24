@@ -4,7 +4,7 @@ import Expect
 import List exposing (map)
 import String exposing (join, split)
 import Test exposing (..)
-import Words.Word exposing (..)
+import Word exposing (..)
 
 
 testHelperRawValueToString : RawValue -> String

@@ -1,4 +1,4 @@
-module Words.Word exposing (..)
+module Word exposing (..)
 
 import Char exposing (toUpper)
 import List exposing (any)
