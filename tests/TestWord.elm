@@ -130,21 +130,6 @@ testNoun =
                         |> testHelperNounToString
                         |> Expect.equal "the the Bobs"
             ]
-        , describe "test as Word"
-            [ test "as word" <|
-                \_ ->
-                    [ ProperNoun (BaseNoun "Eric")
-                    , PluralNoun (BaseNoun "dog") NoIrregularPlural
-                    , DefiniteUncountableNoun (BaseNoun "water")
-                    ]
-                        |> map Noun
-                        |> map wordToValue
-                        |> Expect.equal
-                            [ RawValue "Eric"
-                            , RawValue "dogs"
-                            , RawValue "the water"
-                            ]
-            ]
         , describe "test toOriginalNoun"
             [ test "basic to basic" <|
                 \_ ->
@@ -711,20 +696,109 @@ testBeVerb =
         ]
 
 
-testNegativeBeVerb : Test
-testNegativeBeVerb =
-    describe "test NegativeBeVerb"
-        [ test "negativeBeVerbToRawValue" <|
+testWord : Test
+testWord =
+    describe "toRawValue"
+        [ test "Noun" <|
+            \_ ->
+                [ BasicNoun (BaseNoun "cat") NoIrregularPlural
+                , IndefiniteNoun (BaseNoun "ax") NoIrregularPlural
+                , DefiniteNoun (BaseNoun "thing") NoIrregularPlural
+                , PluralNoun (BaseNoun "dog") NoIrregularPlural
+                , DefinitePluralNoun baseValue (IrregularPlural "thingen")
+                , UncountableNoun (BaseNoun "air")
+                , DefiniteUncountableNoun (BaseNoun "water")
+                , ProperNoun (BaseNoun "Eric")
+                , ProperPluralNoun (BaseNoun "the Joes")
+                , IncorrectNoun "oops" (ProperNoun baseValue)
+                ]
+                    |> map Noun
+                    |> map wordToValue
+                    |> Expect.equal
+                        (map RawValue
+                            [ "cat"
+                            , "an ax"
+                            , "the thing"
+                            , "dogs"
+                            , "the thingen"
+                            , "air"
+                            , "the water"
+                            , "Eric"
+                            , "the Joes"
+                            , "oops"
+                            ]
+                        )
+        , test "Verb" <|
+            \_ ->
+                [ BasicVerb (Infinitive "go") NoIrregularPast
+                , ThirdPerson (Infinitive "pass") NoIrregularPast
+                , Negative (Infinitive "eat") NoIrregularPast
+                , ThirdPersonNegative (Infinitive "fly") NoIrregularPast
+                , Past (Infinitive "pat") NoIrregularPast
+                , Past infinitive (IrregularPast "went")
+                , PastNegative (Infinitive "do") NoIrregularPast
+                , IncorrectVerb "ooops" (Negative infinitive NoIrregularPast)
+                ]
+                    |> map Verb
+                    |> map wordToValue
+                    |> Expect.equal
+                        (map RawValue
+                            [ "go"
+                            , "passes"
+                            , "don't eat"
+                            , "doesn't fly"
+                            , "patted"
+                            , "went"
+                            , "didn't do"
+                            , "ooops"
+                            ]
+                        )
+        , test "Puncutation" <|
+            \_ ->
+                [ Period, ExclamationPoint, QuestionMark, Comma ]
+                    |> map Punctuation
+                    |> map wordToValue
+                    |> Expect.equal
+                        (map RawValue [ ".", "!", "?", "," ])
+        , test "Pronoun" <|
+            \_ ->
+                [ I, Me, You, It, He, Him, She, Her, We, Us, They, Them ]
+                    |> map Pronoun
+                    |> map wordToValue
+                    |> Expect.equal
+                        (map RawValue
+                            [ "I"
+                            , "me"
+                            , "you"
+                            , "it"
+                            , "he"
+                            , "him"
+                            , "she"
+                            , "her"
+                            , "we"
+                            , "us"
+                            , "they"
+                            , "them"
+                            ]
+                        )
+        , test "BeVerb" <|
+            \_ ->
+                [ Is, Am, Are, Was, Were ]
+                    |> map BeVerb
+                    |> map wordToValue
+                    |> Expect.equal (map RawValue [ "is", "am", "are", "was", "were" ])
+        , test "NegativeBeVerb" <|
             \_ ->
                 [ Is, Am, Are, Was, Were ]
                     |> map NegativeBeVerb
-                    |> map negativeBeVerbToRawValue
-                    |> map testHelperRawValueToString
-                    |> Expect.equal [ "is not", "am not", "are not", "was not", "were not" ]
-        , test "negatvieBeVerbToPast" <|
-            \_ ->
-                [ Is, Am, Are, Was, Were ]
-                    |> map NegativeBeVerb
-                    |> map negativeBeVerbToPast
-                    |> Expect.equal (map NegativeBeVerb [ Was, Was, Were, Was, Were ])
+                    |> map wordToValue
+                    |> Expect.equal
+                        (map
+                            RawValue
+                            [ "is not", "am not", "are not", "was not", "were not" ]
+                        )
+        , test "Preposition" <|
+            \_ -> Preposition "abc" |> wordToValue |> Expect.equal (RawValue "abc")
+        , test "SeparableParticle" <|
+            \_ -> SeparableParticle "def" |> wordToValue |> Expect.equal (RawValue "def")
         ]

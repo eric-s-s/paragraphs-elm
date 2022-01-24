@@ -6,8 +6,14 @@ import String exposing (contains, dropRight, endsWith, left, right)
 
 
 type Word
-    = Pronoun Pronoun
-    | Noun Noun
+    = Noun Noun
+    | Verb Verb
+    | Punctuation Punctuation
+    | Pronoun Pronoun
+    | BeVerb BeVerb
+    | NegativeBeVerb BeVerb
+    | Preposition String
+    | SeparableParticle String
 
 
 type RawValue
@@ -21,11 +27,31 @@ getString =
 wordToValue : Word -> RawValue
 wordToValue word =
     case word of
+        Noun x ->
+            nounToRawValue x
+
+        Verb x ->
+            verbToRawValue x
+
+        Punctuation x ->
+            punctuationToRawValue x
+
         Pronoun x ->
             pronounToRawValue x
 
-        Noun x ->
-            nounToRawValue x
+        BeVerb x ->
+            beVerbToRawValue x
+
+        NegativeBeVerb x ->
+            (x |> beVerbToRawValue >> getString)
+                ++ " not"
+                |> RawValue
+
+        Preposition x ->
+            x |> RawValue
+
+        SeparableParticle x ->
+            x |> RawValue
 
 
 type FormattedWord
@@ -99,22 +125,6 @@ beVerbToPast beVerb =
 
         _ ->
             beVerb
-
-
-type NegativeBeVerb
-    = NegativeBeVerb BeVerb
-
-
-negativeBeVerbToRawValue : NegativeBeVerb -> RawValue
-negativeBeVerbToRawValue (NegativeBeVerb beVerb) =
-    (beVerb |> beVerbToRawValue >> getString)
-        ++ " not"
-        |> RawValue
-
-
-negativeBeVerbToPast : NegativeBeVerb -> NegativeBeVerb
-negativeBeVerbToPast (NegativeBeVerb beVerb) =
-    beVerb |> beVerbToPast |> NegativeBeVerb
 
 
 type Pronoun
