@@ -798,7 +798,7 @@ testWord =
                             [ "is not", "am not", "are not", "was not", "were not" ]
                         )
         , test "Preposition" <|
-            \_ -> Preposition "abc" |> wordToValue |> Expect.equal (RawValue "abc")
+            \_ -> Preposition (PrepositionType "abc") |> wordToValue |> Expect.equal (RawValue "abc")
         , test "SeparableParticle" <|
-            \_ -> SeparableParticle "def" |> wordToValue |> Expect.equal (RawValue "def")
+            \_ -> Particle (SeparableParticle "def") |> wordToValue |> Expect.equal (RawValue "def")
         ]

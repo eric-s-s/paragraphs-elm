@@ -5,6 +5,10 @@ import List exposing (any)
 import String exposing (contains, dropRight, endsWith, left, right)
 
 
+type PrepositionType = PrepositionType String
+
+type ParticleType = SeparableParticle String
+
 type Word
     = Noun Noun
     | Verb Verb
@@ -12,8 +16,8 @@ type Word
     | Pronoun Pronoun
     | BeVerb BeVerb
     | NegativeBeVerb BeVerb
-    | Preposition String
-    | SeparableParticle String
+    | Preposition PrepositionType
+    | Particle ParticleType
 
 
 type RawValue
@@ -47,10 +51,10 @@ wordToValue word =
                 ++ " not"
                 |> RawValue
 
-        Preposition x ->
+        Preposition (PrepositionType x) ->
             x |> RawValue
 
-        SeparableParticle x ->
+        Particle (SeparableParticle x) ->
             x |> RawValue
 
 
@@ -440,6 +444,12 @@ type Verb
     | Past Infinitive IrregularPast
     | PastNegative Infinitive IrregularPast
 
+
+makeBasicVerb : String -> Maybe String -> Verb
+makeBasicVerb base past = 
+    case past of
+        Just irregular -> BasicVerb (Infinitive base) (IrregularPast irregular)
+        Nothing -> BasicVerb (Infinitive base) NoIrregularPast
 
 toOriginalVerb : Verb -> Verb
 toOriginalVerb verb =
