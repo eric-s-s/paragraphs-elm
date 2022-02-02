@@ -17,16 +17,6 @@ type alias VerbData =
     }
 
 
-type VerbDataTwo
-    = SingleObject Verb
-    | SingleObjectParticle ParticleType Verb
-    | SingleObjectPreposition PrepositionType Verb
-    | SingleObjectParticlePreposition Verb ParticleType PrepositionType
-    | DoubleObject Verb
-    | DoubleObjectPreposition Verb PrepositionType
-    | DoubleObjectParticlePreposition Verb ParticleType PrepositionType
-
-
 getBasicVerb : VerbData -> Verb
 getBasicVerb datum =
     case datum.irregularPast of
