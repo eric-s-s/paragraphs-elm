@@ -1,7 +1,7 @@
 module Groups exposing (..)
 
 import Word exposing (..)
-import WordData exposing (NumberOfObjects(..), VerbData, getBasicVerb)
+import WordData exposing (NumberOfObjects(..), VerbData, newGetBasicVerb)
 
 
 type Subject
@@ -42,25 +42,25 @@ toPredicate : ( Object, Object ) -> VerbData -> Predicate
 toPredicate ( firstObject, secondObject ) verbData =
     let
         verb =
-            getBasicVerb verbData |> Verb
+            newGetBasicVerb verbData |> Verb
     in
     case verbData.numberOfObjects of
         One ->
             case ( verbData.particle, verbData.preposition, firstObject ) of
                 ( Nothing, Just prep, _ ) ->
-                    [ verb, prep |> stringToPreposition, firstObject |> objectToWord ]
+                    [ verb, prep |> Preposition, firstObject |> objectToWord ]
                         |> Predicate
 
                 ( Just particle, Nothing, NounObject _ ) ->
-                    [ verb, particle |> stringToParticle, firstObject |> objectToWord ]
+                    [ verb, particle |> Particle, firstObject |> objectToWord ]
                         |> Predicate
 
                 ( Just particle, Nothing, PronounObject _ ) ->
-                    [ verb, firstObject |> objectToWord, particle |> stringToParticle ]
+                    [ verb, firstObject |> objectToWord, particle |> Particle ]
                         |> Predicate
 
                 ( Just particle, Just prep, _ ) ->
-                    [ verb, particle |> stringToParticle, prep |> stringToPreposition, firstObject |> objectToWord ]
+                    [ verb, particle |> Particle, prep |> Preposition, firstObject |> objectToWord ]
                         |> Predicate
 
                 _ ->
@@ -71,25 +71,25 @@ toPredicate ( firstObject, secondObject ) verbData =
                 ( Just particle, Just prep, PronounObject _ ) ->
                     [ verb
                     , firstObject |> objectToWord
-                    , particle |> stringToParticle
-                    , prep |> stringToPreposition
+                    , particle |> Particle
+                    , prep |> Preposition
                     , secondObject |> objectToWord
                     ]
                         |> Predicate
 
                 ( Just particle, Just prep, NounObject _ ) ->
                     [ verb
-                    , particle |> stringToParticle
+                    , particle |> Particle
                     , firstObject |> objectToWord
-                    , prep |> stringToPreposition
+                    , prep |> Preposition
                     , secondObject |> objectToWord
                     ]
                         |> Predicate
 
                 ( Nothing, Just prep, _ ) ->
-                    [ verb, firstObject |> objectToWord, prep |> stringToPreposition, secondObject |> objectToWord ]
+                    [ verb, firstObject |> objectToWord, prep |> Preposition, secondObject |> objectToWord ]
                         |> Predicate
 
                 _ ->
-                    [ getBasicVerb verbData |> Verb, firstObject |> objectToWord, secondObject |> objectToWord ]
+                    [ verb, firstObject |> objectToWord, secondObject |> objectToWord ]
                         |> Predicate

@@ -24,10 +24,12 @@ type Word
     | Particle ParticleType
 
 
+stringToPreposition : String -> Word
 stringToPreposition =
     PrepositionType >> Preposition
 
 
+stringToParticle : String -> Word
 stringToParticle =
     SeparableParticle >> Particle
 
@@ -36,6 +38,7 @@ type RawValue
     = RawValue String
 
 
+getString : RawValue -> String
 getString =
     \(RawValue el) -> el
 
@@ -361,14 +364,17 @@ toPlural noun =
             IncorrectNoun (noun |> nounToPluralStringHelper) noun
 
 
+nounToStringHelper : Noun -> String
 nounToStringHelper =
     nounToRawValue >> getString
 
 
+nounToPluralStringHelper : Noun -> String
 nounToPluralStringHelper =
     addPlural << nounToStringHelper
 
 
+nounToIndefiniteStringHelper : Noun -> String
 nounToIndefiniteStringHelper =
     addIndefinteArticle << nounToStringHelper
 
@@ -550,6 +556,7 @@ toPast verb =
             verb
 
 
+verbToStringHelper : Verb -> String
 verbToStringHelper =
     verbToRawValue >> getString
 
@@ -607,10 +614,12 @@ endsWithShortVowelAndConsonant word =
         && not (isCharAtIndexAVowel -3 <| word)
 
 
+isCharAtIndexAVowel : Int -> String -> Bool
 isCharAtIndexAVowel =
     isCharAtIndexInPool "aeiou"
 
 
+isCharAtIndexAVowelPlus : Int -> String -> Bool
 isCharAtIndexAVowelPlus =
     isCharAtIndexInPool "aeiouyw"
 
