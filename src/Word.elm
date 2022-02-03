@@ -5,6 +5,14 @@ import List exposing (any)
 import String exposing (contains, dropRight, endsWith, left, right)
 
 
+type Preposition
+    = SimplePreposition String
+
+
+type Particle
+    = AdverbialParticle String
+
+
 type Word
     = Noun Noun
     | Verb Verb
@@ -12,14 +20,15 @@ type Word
     | Pronoun Pronoun
     | BeVerb BeVerb
     | NegativeBeVerb BeVerb
-    | Preposition String
-    | SeparableParticle String
+    | Preposition Preposition
+    | Particle Particle
 
 
 type RawValue
     = RawValue String
 
 
+getString : RawValue -> String
 getString =
     \(RawValue el) -> el
 
@@ -47,10 +56,10 @@ wordToValue word =
                 ++ " not"
                 |> RawValue
 
-        Preposition x ->
+        Preposition (SimplePreposition x) ->
             x |> RawValue
 
-        SeparableParticle x ->
+        Particle (AdverbialParticle x) ->
             x |> RawValue
 
 
@@ -345,14 +354,17 @@ toPlural noun =
             IncorrectNoun (noun |> nounToPluralStringHelper) noun
 
 
+nounToStringHelper : Noun -> String
 nounToStringHelper =
     nounToRawValue >> getString
 
 
+nounToPluralStringHelper : Noun -> String
 nounToPluralStringHelper =
     addPlural << nounToStringHelper
 
 
+nounToIndefiniteStringHelper : Noun -> String
 nounToIndefiniteStringHelper =
     addIndefinteArticle << nounToStringHelper
 
@@ -524,6 +536,7 @@ toPast verb =
             verb
 
 
+verbToStringHelper : Verb -> String
 verbToStringHelper =
     verbToRawValue >> getString
 
@@ -581,10 +594,12 @@ endsWithShortVowelAndConsonant word =
         && not (isCharAtIndexAVowel -3 <| word)
 
 
+isCharAtIndexAVowel : Int -> String -> Bool
 isCharAtIndexAVowel =
     isCharAtIndexInPool "aeiou"
 
 
+isCharAtIndexAVowelPlus : Int -> String -> Bool
 isCharAtIndexAVowelPlus =
     isCharAtIndexInPool "aeiouyw"
 
