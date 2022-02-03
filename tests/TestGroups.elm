@@ -3,7 +3,7 @@ module TestGroups exposing (..)
 import Expect
 import Groups exposing (..)
 import Test exposing (..)
-import Word exposing (BaseNoun(..), Infinitive(..), IrregularPast(..), Noun(..), ParticleType(..), PrepositionType(..), Pronoun(..), Verb(..), Word(..), stringToPreposition)
+import Word exposing (BaseNoun(..), Infinitive(..), IrregularPast(..), Noun(..), Particle(..), Preposition(..), Pronoun(..), Verb(..), Word(..))
 import WordData exposing (NumberOfObjects(..), VerbData)
 
 
@@ -27,45 +27,45 @@ testPredicate =
                         )
         , test "one preposition no particle object" <|
             \_ ->
-                VerbData "run" NoIrregularPast One Nothing (PrepositionType "over" |> Just)
+                VerbData "run" NoIrregularPast One Nothing (SimplePreposition "over" |> Just)
                     |> toPredicate ( I |> PronounObject, He |> PronounObject )
                     |> Expect.equal
                         ([ BasicVerb (Infinitive "run") NoIrregularPast |> Verb
-                         , "over" |> PrepositionType |> Preposition
+                         , "over" |> SimplePreposition |> Preposition
                          , Me |> Pronoun
                          ]
                             |> Predicate
                         )
         , test "one no preposition particle noun object" <|
             \_ ->
-                VerbData "pick" NoIrregularPast One (SeparableParticle "up" |> Just) Nothing
+                VerbData "pick" NoIrregularPast One (AdverbialParticle "up" |> Just) Nothing
                     |> toPredicate ( toNounObject "dog", He |> PronounObject )
                     |> Expect.equal
                         ([ BasicVerb (Infinitive "pick") NoIrregularPast |> Verb
-                         , "up" |> SeparableParticle |> Particle
+                         , "up" |> AdverbialParticle |> Particle
                          , ProperNoun (BaseNoun "dog") |> Noun
                          ]
                             |> Predicate
                         )
         , test "one no preposition particle pronnoun object" <|
             \_ ->
-                VerbData "pick" NoIrregularPast One (SeparableParticle "up" |> Just) Nothing
+                VerbData "pick" NoIrregularPast One (AdverbialParticle "up" |> Just) Nothing
                     |> toPredicate ( I |> PronounObject, He |> PronounObject )
                     |> Expect.equal
                         ([ BasicVerb (Infinitive "pick") NoIrregularPast |> Verb
                          , Me |> Pronoun
-                         , "up" |> SeparableParticle |> Particle
+                         , "up" |> AdverbialParticle |> Particle
                          ]
                             |> Predicate
                         )
         , test "one  preposition particle one object" <|
             \_ ->
-                VerbData "clean" NoIrregularPast One (SeparableParticle "up" |> Just) (PrepositionType "with" |> Just)
+                VerbData "clean" NoIrregularPast One (AdverbialParticle "up" |> Just) (SimplePreposition "with" |> Just)
                     |> toPredicate ( I |> PronounObject, He |> PronounObject )
                     |> Expect.equal
                         ([ BasicVerb (Infinitive "clean") NoIrregularPast |> Verb
-                         , "up" |> SeparableParticle |> Particle
-                         , "with" |> PrepositionType |> Preposition
+                         , "up" |> AdverbialParticle |> Particle
+                         , "with" |> SimplePreposition |> Preposition
                          , Me |> Pronoun
                          ]
                             |> Predicate
@@ -94,38 +94,38 @@ testPredicate =
                         )
         , test "two, preposition, particle two object pronouns" <|
             \_ ->
-                VerbData "clean" NoIrregularPast Two (SeparableParticle "up" |> Just) (PrepositionType "with" |> Just)
+                VerbData "clean" NoIrregularPast Two (AdverbialParticle "up" |> Just) (SimplePreposition "with" |> Just)
                     |> toPredicate ( I |> PronounObject, He |> PronounObject )
                     |> Expect.equal
                         ([ BasicVerb (Infinitive "clean") NoIrregularPast |> Verb
                          , Me |> Pronoun
-                         , "up" |> SeparableParticle |> Particle
-                         , "with" |> PrepositionType |> Preposition
+                         , "up" |> AdverbialParticle |> Particle
+                         , "with" |> SimplePreposition |> Preposition
                          , Him |> Pronoun
                          ]
                             |> Predicate
                         )
         , test "two, preposition, particle two object nouns" <|
             \_ ->
-                VerbData "clean" NoIrregularPast Two (SeparableParticle "up" |> Just) (PrepositionType "with" |> Just)
+                VerbData "clean" NoIrregularPast Two (AdverbialParticle "up" |> Just) (SimplePreposition "with" |> Just)
                     |> toPredicate ( toNounObject "dog", toNounObject "cat" )
                     |> Expect.equal
                         ([ BasicVerb (Infinitive "clean") NoIrregularPast |> Verb
-                         , "up" |> SeparableParticle |> Particle
+                         , "up" |> AdverbialParticle |> Particle
                          , ProperNoun (BaseNoun "dog") |> Noun
-                         , "with" |> PrepositionType |> Preposition
+                         , "with" |> SimplePreposition |> Preposition
                          , ProperNoun (BaseNoun "cat") |> Noun
                          ]
                             |> Predicate
                         )
         , test "two, preposition, no particle any object" <|
             \_ ->
-                VerbData "clean" NoIrregularPast Two Nothing (PrepositionType "with" |> Just)
+                VerbData "clean" NoIrregularPast Two Nothing (SimplePreposition "with" |> Just)
                     |> toPredicate ( He |> PronounObject, toNounObject "cat" )
                     |> Expect.equal
                         ([ BasicVerb (Infinitive "clean") NoIrregularPast |> Verb
                          , Him |> Pronoun
-                         , "with" |> PrepositionType |> Preposition
+                         , "with" |> SimplePreposition |> Preposition
                          , ProperNoun (BaseNoun "cat") |> Noun
                          ]
                             |> Predicate
