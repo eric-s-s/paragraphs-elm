@@ -1,6 +1,6 @@
 module WordData exposing (..)
 
-import Word exposing (Infinitive(..), IrregularPast(..), Particle(..), Preposition(..), Verb(..), Word(..))
+import Word exposing (Infinitive(..), IrregularPast(..), Particle(..), Preposition(..), Verb(..))
 
 
 type NumberOfObjects
@@ -17,8 +17,8 @@ type alias VerbData =
     }
 
 
-newGetBasicVerb : VerbData -> Verb
-newGetBasicVerb datum =
+getBasicVerb : VerbData -> Verb
+getBasicVerb datum =
     BasicVerb (Infinitive datum.infinitive) datum.irregularPast
 
 

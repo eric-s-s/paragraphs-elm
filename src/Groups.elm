@@ -1,7 +1,7 @@
 module Groups exposing (..)
 
-import Word exposing (..)
-import WordData exposing (NumberOfObjects(..), VerbData, newGetBasicVerb)
+import Word exposing (Noun, Pronoun, Word(..), toObject, toSubject)
+import WordData exposing (NumberOfObjects(..), VerbData, getBasicVerb)
 
 
 type Subject
@@ -42,7 +42,7 @@ toPredicate : ( Object, Object ) -> VerbData -> Predicate
 toPredicate ( firstObject, secondObject ) verbData =
     let
         verb =
-            newGetBasicVerb verbData |> Verb
+            getBasicVerb verbData |> Verb
     in
     case verbData.numberOfObjects of
         One ->
