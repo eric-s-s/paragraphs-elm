@@ -1,12 +1,21 @@
 module Groups exposing (..)
 
-import Word exposing (Noun, Pronoun, Word(..), toObject, toSubject)
+import Word exposing (Noun, Pronoun, Punctuation, Word(..), toObject, toSubject)
 import WordData exposing (NumberOfObjects(..), VerbData, getBasicVerb)
 
 
 type Subject
     = NounSubject Noun
     | PronounSubject Pronoun
+
+
+type alias SentenceParts =
+    { subject : Subject
+    , verbData : VerbData
+    , firstObject : Object
+    , secondObject : Object
+    , punctuation : Punctuation
+    }
 
 
 subjectToWord : Subject -> Word
