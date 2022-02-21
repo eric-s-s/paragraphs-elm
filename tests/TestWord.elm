@@ -17,9 +17,9 @@ testHelperNounToString =
     nounToRawValue >> testHelperRawValueToString
 
 
-baseValue : BaseNoun
+baseValue : NounBase
 baseValue =
-    BaseNoun "nonsense"
+    NounBase "nonsense"
 
 
 plural : IrregularPlural
@@ -33,66 +33,66 @@ testNoun =
         [ describe "nounToRawValue"
             [ test "base noun to value" <|
                 \_ ->
-                    BasicNoun (BaseNoun "dog") NoIrregularPlural
+                    BasicNoun (NounBase "dog") NoIrregularPlural
                         |> testHelperNounToString
                         |> Expect.equal "dog"
             , test "indefinite noun to value as a" <|
                 \_ ->
                     [ "dog", "cat", "mouse" ]
-                        |> map (\el -> IndefiniteNoun (BaseNoun el) NoIrregularPlural)
+                        |> map (\el -> IndefiniteNoun (NounBase el) NoIrregularPlural)
                         |> map testHelperNounToString
                         |> Expect.equal [ "a dog", "a cat", "a mouse" ]
             , test "indefinite noun to value as an" <|
                 \_ ->
                     split "" "aeiouAEIOU"
-                        |> map (\el -> IndefiniteNoun (BaseNoun el) NoIrregularPlural)
+                        |> map (\el -> IndefiniteNoun (NounBase el) NoIrregularPlural)
                         |> map testHelperNounToString
                         |> join ", "
                         |> Expect.equal
                             "an a, an e, an i, an o, an u, an A, an E, an I, an O, an U"
             , test "definite noun to value" <|
                 \_ ->
-                    DefiniteNoun (BaseNoun "dog") NoIrregularPlural
+                    DefiniteNoun (NounBase "dog") NoIrregularPlural
                         |> testHelperNounToString
                         |> Expect.equal "the dog"
             , test "plural noun to value irregular" <|
                 \_ ->
-                    PluralNoun (BaseNoun "dog") (IrregularPlural "doggies")
+                    PluralNoun (NounBase "dog") (IrregularPlural "doggies")
                         |> testHelperNounToString
                         |> Expect.equal "doggies"
             , test "plural noun to value s ending" <|
                 \_ ->
-                    PluralNoun (BaseNoun "dog") NoIrregularPlural
+                    PluralNoun (NounBase "dog") NoIrregularPlural
                         |> testHelperNounToString
                         |> Expect.equal "dogs"
             , test "plural noun to value es ending" <|
                 \_ ->
                     [ "mass", "bobo", "ex", "watch", "dish" ]
-                        |> map (\el -> PluralNoun (BaseNoun el) NoIrregularPlural)
+                        |> map (\el -> PluralNoun (NounBase el) NoIrregularPlural)
                         |> map testHelperNounToString
                         |> Expect.equal [ "masses", "boboes", "exes", "watches", "dishes" ]
             , test "plural noun to value y as vowel" <|
                 \_ ->
                     [ "day", "boy", "caddy", "baby", "key" ]
-                        |> map (\el -> PluralNoun (BaseNoun el) NoIrregularPlural)
+                        |> map (\el -> PluralNoun (NounBase el) NoIrregularPlural)
                         |> map testHelperNounToString
                         |> Expect.equal [ "days", "boys", "caddies", "babies", "keys" ]
             , test "plural noun to value f endings" <|
                 \_ ->
                     [ "life", "waif", "calf", "leaf", "wolf", "wharf" ]
-                        |> map (\el -> PluralNoun (BaseNoun el) NoIrregularPlural)
+                        |> map (\el -> PluralNoun (NounBase el) NoIrregularPlural)
                         |> map testHelperNounToString
                         |> Expect.equal
                             [ "lives", "waifs", "calves", "leaves", "wolves", "wharves" ]
             , test "definite plural noun to value irregular" <|
                 \_ ->
-                    DefinitePluralNoun (BaseNoun "dog") (IrregularPlural "doggies")
+                    DefinitePluralNoun (NounBase "dog") (IrregularPlural "doggies")
                         |> testHelperNounToString
                         |> Expect.equal "the doggies"
             , test "definite plural noun to value" <|
                 \_ ->
                     [ "life", "waif", "baby", "day", "bobo", "ex", "dog" ]
-                        |> map (\el -> DefinitePluralNoun (BaseNoun el) NoIrregularPlural)
+                        |> map (\el -> DefinitePluralNoun (NounBase el) NoIrregularPlural)
                         |> map testHelperNounToString
                         |> Expect.equal
                             [ "the lives"
@@ -105,27 +105,27 @@ testNoun =
                             ]
             , test "uncountable noun to value" <|
                 \_ ->
-                    UncountableNoun (BaseNoun "water")
+                    UncountableNoun (NounBase "water")
                         |> testHelperNounToString
                         |> Expect.equal "water"
             , test "definite uncountable noun to value" <|
                 \_ ->
-                    DefiniteUncountableNoun (BaseNoun "water")
+                    DefiniteUncountableNoun (NounBase "water")
                         |> testHelperNounToString
                         |> Expect.equal "the water"
             , test "proper noun to value" <|
                 \_ ->
-                    ProperNoun (BaseNoun "Eric")
+                    ProperNoun (NounBase "Eric")
                         |> testHelperNounToString
                         |> Expect.equal "Eric"
             , test "proper plural noun to value" <|
                 \_ ->
-                    ProperPluralNoun (BaseNoun "the Bobs")
+                    ProperPluralNoun (NounBase "the Bobs")
                         |> testHelperNounToString
                         |> Expect.equal "the Bobs"
             , test "incorrect noun to value" <|
                 \_ ->
-                    ProperPluralNoun (BaseNoun "the Bobs")
+                    ProperPluralNoun (NounBase "the Bobs")
                         |> IncorrectNoun "the the Bobs"
                         |> testHelperNounToString
                         |> Expect.equal "the the Bobs"
@@ -208,7 +208,7 @@ testNoun =
                     let
                         nouns =
                             [ "dog", "ape" ]
-                                |> map (\el -> PluralNoun (BaseNoun el) NoIrregularPlural)
+                                |> map (\el -> PluralNoun (NounBase el) NoIrregularPlural)
                     in
                     nouns
                         |> map toIndefinite
@@ -218,7 +218,7 @@ testNoun =
                     let
                         nouns =
                             [ "cat", "owl" ]
-                                |> map (\el -> DefinitePluralNoun (BaseNoun el) NoIrregularPlural)
+                                |> map (\el -> DefinitePluralNoun (NounBase el) NoIrregularPlural)
                     in
                     nouns
                         |> map toIndefinite
@@ -227,8 +227,8 @@ testNoun =
                 \_ ->
                     let
                         nouns =
-                            [ UncountableNoun (BaseNoun "water")
-                            , DefiniteUncountableNoun (BaseNoun "unstuff")
+                            [ UncountableNoun (NounBase "water")
+                            , DefiniteUncountableNoun (NounBase "unstuff")
                             ]
                     in
                     nouns
@@ -243,8 +243,8 @@ testNoun =
                 \_ ->
                     let
                         nouns =
-                            [ ProperNoun (BaseNoun "Eric")
-                            , ProperPluralNoun (BaseNoun "BMWs")
+                            [ ProperNoun (NounBase "Eric")
+                            , ProperPluralNoun (NounBase "BMWs")
                             ]
                     in
                     nouns
@@ -288,7 +288,7 @@ testNoun =
                 \_ ->
                     let
                         inner =
-                            baseValue |> (\(BaseNoun el) -> el)
+                            baseValue |> (\(NounBase el) -> el)
 
                         noun =
                             ProperNoun baseValue
@@ -322,19 +322,19 @@ testNoun =
                         |> Expect.equal (DefinitePluralNoun baseValue plural)
             , test "proper to incorrect" <|
                 \_ ->
-                    ProperNoun (BaseNoun "Jody")
+                    ProperNoun (NounBase "Jody")
                         |> toPlural
-                        |> Expect.equal (IncorrectNoun "Jodies" (ProperNoun (BaseNoun "Jody")))
+                        |> Expect.equal (IncorrectNoun "Jodies" (ProperNoun (NounBase "Jody")))
             , test "uncountable to incorrect" <|
                 \_ ->
-                    UncountableNoun (BaseNoun "fizz")
+                    UncountableNoun (NounBase "fizz")
                         |> toPlural
-                        |> Expect.equal (IncorrectNoun "fizzes" (UncountableNoun (BaseNoun "fizz")))
+                        |> Expect.equal (IncorrectNoun "fizzes" (UncountableNoun (NounBase "fizz")))
             , test "definite uncountable to incorrect" <|
                 \_ ->
-                    DefiniteUncountableNoun (BaseNoun "fizz")
+                    DefiniteUncountableNoun (NounBase "fizz")
                         |> toPlural
-                        |> Expect.equal (IncorrectNoun "the fizzes" (DefiniteUncountableNoun (BaseNoun "fizz")))
+                        |> Expect.equal (IncorrectNoun "the fizzes" (DefiniteUncountableNoun (NounBase "fizz")))
             ]
         ]
 
@@ -701,15 +701,15 @@ testWord =
     describe "toRawValue"
         [ test "Noun" <|
             \_ ->
-                [ BasicNoun (BaseNoun "cat") NoIrregularPlural
-                , IndefiniteNoun (BaseNoun "ax") NoIrregularPlural
-                , DefiniteNoun (BaseNoun "thing") NoIrregularPlural
-                , PluralNoun (BaseNoun "dog") NoIrregularPlural
+                [ BasicNoun (NounBase "cat") NoIrregularPlural
+                , IndefiniteNoun (NounBase "ax") NoIrregularPlural
+                , DefiniteNoun (NounBase "thing") NoIrregularPlural
+                , PluralNoun (NounBase "dog") NoIrregularPlural
                 , DefinitePluralNoun baseValue (IrregularPlural "thingen")
-                , UncountableNoun (BaseNoun "air")
-                , DefiniteUncountableNoun (BaseNoun "water")
-                , ProperNoun (BaseNoun "Eric")
-                , ProperPluralNoun (BaseNoun "the Joes")
+                , UncountableNoun (NounBase "air")
+                , DefiniteUncountableNoun (NounBase "water")
+                , ProperNoun (NounBase "Eric")
+                , ProperPluralNoun (NounBase "the Joes")
                 , IncorrectNoun "oops" (ProperNoun baseValue)
                 ]
                     |> map Noun

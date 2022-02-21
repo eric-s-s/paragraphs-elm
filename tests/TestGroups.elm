@@ -3,13 +3,13 @@ module TestGroups exposing (..)
 import Expect
 import Groups exposing (..)
 import Test exposing (..)
-import Word exposing (BaseNoun(..), Infinitive(..), IrregularPast(..), Noun(..), Particle(..), Preposition(..), Pronoun(..), Verb(..), Word(..))
+import Word exposing (Infinitive(..), IrregularPast(..), Noun(..), NounBase(..), Particle(..), Preposition(..), Pronoun(..), Verb(..), Word(..))
 import WordData exposing (NumberOfObjects(..), VerbData)
 
 
 toNounObject : String -> Object
 toNounObject inputString =
-    ProperNoun (BaseNoun inputString) |> NounObject
+    ProperNoun (NounBase inputString) |> NounObject
 
 
 testPredicate : Test
@@ -21,17 +21,17 @@ testPredicate =
                     |> toPredicate ( toNounObject "dog", toNounObject "cat" )
                     |> Expect.equal
                         ([ BasicVerb (Infinitive "see") NoIrregularPast |> Verb
-                         , ProperNoun (BaseNoun "dog") |> Noun
+                         , ProperNoun (NounBase "dog") |> Noun
                          ]
                             |> Predicate
                         )
         , test "one preposition no particle object" <|
             \_ ->
-                VerbData "run" NoIrregularPast One Nothing (SimplePreposition "over" |> Just)
+                VerbData "play" NoIrregularPast One Nothing (SimplePreposition "with" |> Just)
                     |> toPredicate ( I |> PronounObject, He |> PronounObject )
                     |> Expect.equal
-                        ([ BasicVerb (Infinitive "run") NoIrregularPast |> Verb
-                         , "over" |> SimplePreposition |> Preposition
+                        ([ BasicVerb (Infinitive "play") NoIrregularPast |> Verb
+                         , "with" |> SimplePreposition |> Preposition
                          , Me |> Pronoun
                          ]
                             |> Predicate
@@ -43,7 +43,7 @@ testPredicate =
                     |> Expect.equal
                         ([ BasicVerb (Infinitive "pick") NoIrregularPast |> Verb
                          , "up" |> AdverbialParticle |> Particle
-                         , ProperNoun (BaseNoun "dog") |> Noun
+                         , ProperNoun (NounBase "dog") |> Noun
                          ]
                             |> Predicate
                         )
@@ -76,8 +76,8 @@ testPredicate =
                     |> toPredicate ( toNounObject "dog", toNounObject "cat" )
                     |> Expect.equal
                         ([ BasicVerb (Infinitive "give") NoIrregularPast |> Verb
-                         , ProperNoun (BaseNoun "dog") |> Noun
-                         , ProperNoun (BaseNoun "cat") |> Noun
+                         , ProperNoun (NounBase "dog") |> Noun
+                         , ProperNoun (NounBase "cat") |> Noun
                          ]
                             |> Predicate
                         )
@@ -112,9 +112,9 @@ testPredicate =
                     |> Expect.equal
                         ([ BasicVerb (Infinitive "clean") NoIrregularPast |> Verb
                          , "up" |> AdverbialParticle |> Particle
-                         , ProperNoun (BaseNoun "dog") |> Noun
+                         , ProperNoun (NounBase "dog") |> Noun
                          , "with" |> SimplePreposition |> Preposition
-                         , ProperNoun (BaseNoun "cat") |> Noun
+                         , ProperNoun (NounBase "cat") |> Noun
                          ]
                             |> Predicate
                         )
@@ -126,7 +126,7 @@ testPredicate =
                         ([ BasicVerb (Infinitive "clean") NoIrregularPast |> Verb
                          , Him |> Pronoun
                          , "with" |> SimplePreposition |> Preposition
-                         , ProperNoun (BaseNoun "cat") |> Noun
+                         , ProperNoun (NounBase "cat") |> Noun
                          ]
                             |> Predicate
                         )

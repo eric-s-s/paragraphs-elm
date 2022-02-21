@@ -1,6 +1,16 @@
 module WordData exposing (..)
 
-import Word exposing (BaseNoun(..), Infinitive(..), IrregularPast(..), IrregularPlural(..), Noun(..), Particle(..), Preposition(..), Verb(..))
+import Word
+    exposing
+        ( Infinitive(..)
+        , IrregularPast(..)
+        , IrregularPlural(..)
+        , Noun(..)
+        , NounBase(..)
+        , Particle(..)
+        , Preposition(..)
+        , Verb(..)
+        )
 
 
 type NumberOfObjects
@@ -90,67 +100,67 @@ lotsaVerbs =
 
 lotsaNouns : List Noun
 lotsaNouns =
-    [ BasicNoun (BaseNoun "ant") NoIrregularPlural
-    , BasicNoun (BaseNoun "apple") NoIrregularPlural
-    , BasicNoun (BaseNoun "baby") NoIrregularPlural
-    , BasicNoun (BaseNoun "banana") NoIrregularPlural
-    , BasicNoun (BaseNoun "bicycle") NoIrregularPlural
-    , BasicNoun (BaseNoun "book") NoIrregularPlural
-    , BasicNoun (BaseNoun "box") NoIrregularPlural
-    , BasicNoun (BaseNoun "bus") NoIrregularPlural
-    , BasicNoun (BaseNoun "car") NoIrregularPlural
-    , BasicNoun (BaseNoun "child") (IrregularPlural "children")
-    , BasicNoun (BaseNoun "cow") NoIrregularPlural
-    , BasicNoun (BaseNoun "eagle") NoIrregularPlural
-    , BasicNoun (BaseNoun "egg") NoIrregularPlural
-    , BasicNoun (BaseNoun "elephant") NoIrregularPlural
-    , BasicNoun (BaseNoun "finger") NoIrregularPlural
-    , BasicNoun (BaseNoun "fire fighter") NoIrregularPlural
-    , BasicNoun (BaseNoun "fish") (IrregularPlural "fish")
-    , BasicNoun (BaseNoun "house") NoIrregularPlural
-    , BasicNoun (BaseNoun "husband") NoIrregularPlural
-    , BasicNoun (BaseNoun "knife") NoIrregularPlural
-    , BasicNoun (BaseNoun "leaf") NoIrregularPlural
-    , BasicNoun (BaseNoun "nose") NoIrregularPlural
-    , BasicNoun (BaseNoun "octopus") NoIrregularPlural
-    , BasicNoun (BaseNoun "orange") NoIrregularPlural
-    , BasicNoun (BaseNoun "pen") NoIrregularPlural
-    , BasicNoun (BaseNoun "person") (IrregularPlural "people")
-    , BasicNoun (BaseNoun "pineapple") NoIrregularPlural
-    , BasicNoun (BaseNoun "pony") NoIrregularPlural
-    , BasicNoun (BaseNoun "school") NoIrregularPlural
-    , BasicNoun (BaseNoun "shark") NoIrregularPlural
-    , BasicNoun (BaseNoun "sheep") (IrregularPlural "sheep")
-    , BasicNoun (BaseNoun "table") NoIrregularPlural
-    , BasicNoun (BaseNoun "teacher") NoIrregularPlural
-    , BasicNoun (BaseNoun "tiger") NoIrregularPlural
-    , BasicNoun (BaseNoun "tree") NoIrregularPlural
-    , BasicNoun (BaseNoun "uncle") NoIrregularPlural
-    , BasicNoun (BaseNoun "watch") NoIrregularPlural
-    , BasicNoun (BaseNoun "wife") NoIrregularPlural
-    , BasicNoun (BaseNoun "witch") NoIrregularPlural
-    , UncountableNoun (BaseNoun "apple juice")
-    , UncountableNoun (BaseNoun "cake")
-    , UncountableNoun (BaseNoun "gold")
-    , UncountableNoun (BaseNoun "hair")
-    , UncountableNoun (BaseNoun "homework")
-    , UncountableNoun (BaseNoun "ice cream")
-    , UncountableNoun (BaseNoun "lightning")
-    , UncountableNoun (BaseNoun "milk")
-    , UncountableNoun (BaseNoun "money")
-    , UncountableNoun (BaseNoun "pizza")
-    , UncountableNoun (BaseNoun "poop")
-    , UncountableNoun (BaseNoun "rice")
-    , UncountableNoun (BaseNoun "sand")
-    , UncountableNoun (BaseNoun "stinky tofu")
-    , UncountableNoun (BaseNoun "tea")
-    , UncountableNoun (BaseNoun "thunder")
-    , UncountableNoun (BaseNoun "water")
-    , ProperNoun (BaseNoun "Tom")
-    , ProperNoun (BaseNoun "Dick")
-    , ProperNoun (BaseNoun "Harry")
-    , ProperNoun (BaseNoun "Bat Man")
-    , ProperPluralNoun (BaseNoun "the Joneses")
-    , ProperPluralNoun (BaseNoun "the Avengers")
-    , ProperPluralNoun (BaseNoun "Ferraris")
+    [ BasicNoun (NounBase "ant") NoIrregularPlural
+    , BasicNoun (NounBase "apple") NoIrregularPlural
+    , BasicNoun (NounBase "baby") NoIrregularPlural
+    , BasicNoun (NounBase "banana") NoIrregularPlural
+    , BasicNoun (NounBase "bicycle") NoIrregularPlural
+    , BasicNoun (NounBase "book") NoIrregularPlural
+    , BasicNoun (NounBase "box") NoIrregularPlural
+    , BasicNoun (NounBase "bus") NoIrregularPlural
+    , BasicNoun (NounBase "car") NoIrregularPlural
+    , BasicNoun (NounBase "child") (IrregularPlural "children")
+    , BasicNoun (NounBase "cow") NoIrregularPlural
+    , BasicNoun (NounBase "eagle") NoIrregularPlural
+    , BasicNoun (NounBase "egg") NoIrregularPlural
+    , BasicNoun (NounBase "elephant") NoIrregularPlural
+    , BasicNoun (NounBase "finger") NoIrregularPlural
+    , BasicNoun (NounBase "fire fighter") NoIrregularPlural
+    , BasicNoun (NounBase "fish") (IrregularPlural "fish")
+    , BasicNoun (NounBase "house") NoIrregularPlural
+    , BasicNoun (NounBase "husband") NoIrregularPlural
+    , BasicNoun (NounBase "knife") NoIrregularPlural
+    , BasicNoun (NounBase "leaf") NoIrregularPlural
+    , BasicNoun (NounBase "nose") NoIrregularPlural
+    , BasicNoun (NounBase "octopus") NoIrregularPlural
+    , BasicNoun (NounBase "orange") NoIrregularPlural
+    , BasicNoun (NounBase "pen") NoIrregularPlural
+    , BasicNoun (NounBase "person") (IrregularPlural "people")
+    , BasicNoun (NounBase "pineapple") NoIrregularPlural
+    , BasicNoun (NounBase "pony") NoIrregularPlural
+    , BasicNoun (NounBase "school") NoIrregularPlural
+    , BasicNoun (NounBase "shark") NoIrregularPlural
+    , BasicNoun (NounBase "sheep") (IrregularPlural "sheep")
+    , BasicNoun (NounBase "table") NoIrregularPlural
+    , BasicNoun (NounBase "teacher") NoIrregularPlural
+    , BasicNoun (NounBase "tiger") NoIrregularPlural
+    , BasicNoun (NounBase "tree") NoIrregularPlural
+    , BasicNoun (NounBase "uncle") NoIrregularPlural
+    , BasicNoun (NounBase "watch") NoIrregularPlural
+    , BasicNoun (NounBase "wife") NoIrregularPlural
+    , BasicNoun (NounBase "witch") NoIrregularPlural
+    , UncountableNoun (NounBase "apple juice")
+    , UncountableNoun (NounBase "cake")
+    , UncountableNoun (NounBase "gold")
+    , UncountableNoun (NounBase "hair")
+    , UncountableNoun (NounBase "homework")
+    , UncountableNoun (NounBase "ice cream")
+    , UncountableNoun (NounBase "lightning")
+    , UncountableNoun (NounBase "milk")
+    , UncountableNoun (NounBase "money")
+    , UncountableNoun (NounBase "pizza")
+    , UncountableNoun (NounBase "poop")
+    , UncountableNoun (NounBase "rice")
+    , UncountableNoun (NounBase "sand")
+    , UncountableNoun (NounBase "stinky tofu")
+    , UncountableNoun (NounBase "tea")
+    , UncountableNoun (NounBase "thunder")
+    , UncountableNoun (NounBase "water")
+    , ProperNoun (NounBase "Tom")
+    , ProperNoun (NounBase "Dick")
+    , ProperNoun (NounBase "Harry")
+    , ProperNoun (NounBase "Batman")
+    , ProperPluralNoun (NounBase "the Joneses")
+    , ProperPluralNoun (NounBase "the Avengers")
+    , ProperPluralNoun (NounBase "Ferraris")
     ]

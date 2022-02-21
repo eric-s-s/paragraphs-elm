@@ -235,8 +235,8 @@ pronounToRawValue value =
             "them" |> RawValue
 
 
-type BaseNoun
-    = BaseNoun String
+type NounBase
+    = NounBase String
 
 
 type IrregularPlural
@@ -245,15 +245,15 @@ type IrregularPlural
 
 
 type Noun
-    = BasicNoun BaseNoun IrregularPlural
-    | IndefiniteNoun BaseNoun IrregularPlural
-    | DefiniteNoun BaseNoun IrregularPlural
-    | PluralNoun BaseNoun IrregularPlural
-    | DefinitePluralNoun BaseNoun IrregularPlural
-    | UncountableNoun BaseNoun
-    | DefiniteUncountableNoun BaseNoun
-    | ProperNoun BaseNoun
-    | ProperPluralNoun BaseNoun
+    = BasicNoun NounBase IrregularPlural
+    | IndefiniteNoun NounBase IrregularPlural
+    | DefiniteNoun NounBase IrregularPlural
+    | PluralNoun NounBase IrregularPlural
+    | DefinitePluralNoun NounBase IrregularPlural
+    | UncountableNoun NounBase
+    | DefiniteUncountableNoun NounBase
+    | ProperNoun NounBase
+    | ProperPluralNoun NounBase
     | IncorrectNoun String Noun
 
 
@@ -297,10 +297,10 @@ toDefinite noun =
         UncountableNoun a ->
             DefiniteUncountableNoun a
 
-        ProperNoun (BaseNoun a) ->
+        ProperNoun (NounBase a) ->
             IncorrectNoun ("the " ++ a) noun
 
-        ProperPluralNoun (BaseNoun a) ->
+        ProperPluralNoun (NounBase a) ->
             IncorrectNoun ("the " ++ a) noun
 
         IncorrectNoun value original ->
@@ -375,37 +375,37 @@ nounToRawValue noun =
         IncorrectNoun value _ ->
             value |> RawValue
 
-        BasicNoun (BaseNoun value) _ ->
+        BasicNoun (NounBase value) _ ->
             value |> RawValue
 
-        IndefiniteNoun (BaseNoun value) _ ->
+        IndefiniteNoun (NounBase value) _ ->
             addIndefinteArticle value |> RawValue
 
-        DefiniteNoun (BaseNoun value) _ ->
+        DefiniteNoun (NounBase value) _ ->
             "the " ++ value |> RawValue
 
         PluralNoun _ (IrregularPlural value) ->
             value |> RawValue
 
-        PluralNoun (BaseNoun value) _ ->
+        PluralNoun (NounBase value) _ ->
             addPlural value |> RawValue
 
         DefinitePluralNoun _ (IrregularPlural value) ->
             "the " ++ value |> RawValue
 
-        DefinitePluralNoun (BaseNoun value) _ ->
+        DefinitePluralNoun (NounBase value) _ ->
             "the " ++ addPlural value |> RawValue
 
-        UncountableNoun (BaseNoun value) ->
+        UncountableNoun (NounBase value) ->
             value |> RawValue
 
-        DefiniteUncountableNoun (BaseNoun value) ->
+        DefiniteUncountableNoun (NounBase value) ->
             "the " ++ value |> RawValue
 
-        ProperNoun (BaseNoun value) ->
+        ProperNoun (NounBase value) ->
             value |> RawValue
 
-        ProperPluralNoun (BaseNoun value) ->
+        ProperPluralNoun (NounBase value) ->
             value |> RawValue
 
 
