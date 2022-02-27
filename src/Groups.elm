@@ -1,6 +1,6 @@
 module Groups exposing (..)
 
-import Word exposing (FormattedWord(..), Noun, Pronoun, Punctuation, Word(..), toObject, toSubject, toThirdPerson, wordToString)
+import Word exposing (FormattedWord(..), Noun(..), Pronoun(..), Punctuation, Word(..), punctuationToRawValue, toObject, toSubject, toThirdPerson, wordToString)
 import WordData exposing (NumberOfObjects(..), VerbData, getBasicVerb)
 
 
@@ -17,10 +17,57 @@ sentenceToString : Sentence -> String
 sentenceToString sentence =
     case sentence of
         SimplePresent subject predicate punctuation ->
-            (subject |> subjectToWord |> Capital |> wordToString)
-                ++ " "
-                ++ (predicate |> predicateToThirdPerson |> predicateToString)
-                ++ (Punctuation punctuation |> BaseWord |> wordToString)
+            if isThirdPerson subject then
+                sentencePartsToString subject (predicate |> predicateToThirdPerson) punctuation
+
+            else
+                sentencePartsToString subject predicate punctuation
+
+
+sentencePartsToString : Subject -> Predicate -> Punctuation -> String
+sentencePartsToString subject predicate punctuation =
+    (subject |> subjectToWord |> Capital |> wordToString)
+        ++ " "
+        ++ (predicate |> predicateToString)
+        ++ (Punctuation punctuation |> BaseWord |> wordToString)
+
+
+isThirdPerson : Subject -> Bool
+isThirdPerson subject =
+    case subject of
+        PronounSubject pronoun ->
+            case pronoun |> toSubject of
+                He ->
+                    True
+
+                She ->
+                    True
+
+                It ->
+                    True
+
+                _ ->
+                    False
+
+        NounSubject noun ->
+            case noun of
+                IndefiniteNoun _ _ ->
+                    True
+
+                DefiniteNoun _ _ ->
+                    True
+
+                UncountableNoun _ ->
+                    True
+
+                DefiniteUncountableNoun _ ->
+                    True
+
+                ProperNoun _ ->
+                    True
+
+                _ ->
+                    False
 
 
 subjectToWord : Subject -> Word

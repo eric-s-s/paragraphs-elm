@@ -2,8 +2,9 @@ module TestGroups exposing (..)
 
 import Expect
 import Groups exposing (..)
+import List exposing (map)
 import Test exposing (..)
-import Word exposing (Infinitive(..), IrregularPast(..), Noun(..), NounBase(..), Particle(..), Preposition(..), Pronoun(..), Punctuation(..), Verb(..), Word(..))
+import Word exposing (Infinitive(..), IrregularPast(..), IrregularPlural(..), Noun(..), NounBase(..), Particle(..), Preposition(..), Pronoun(..), Punctuation(..), Verb(..), Word(..))
 import WordData exposing (NumberOfObjects(..), VerbData)
 
 
@@ -139,14 +140,78 @@ testingPredicate =
         |> toPredicate ( He |> PronounObject, toNounObject "notused" )
 
 
+testingSimplePresent : Subject -> Sentence
+testingSimplePresent subject =
+    SimplePresent subject testingPredicate Period
+
+
 testSentence : Test
 testSentence =
     describe "sentenceToString"
         [ describe "SimplePresent"
-            [ test "third person" <|
+            [ test "third person pronoun" <|
                 \_ ->
-                    SimplePresent (PronounSubject Her) testingPredicate Period
-                        |> sentenceToString
-                        |> Expect.equal "She eats him up."
+                    [ He, Him, Her, She, It ]
+                        |> map PronounSubject
+                        |> map testingSimplePresent
+                        |> map sentenceToString
+                        |> Expect.equal
+                            [ "He eats him up."
+                            , "He eats him up."
+                            , "She eats him up."
+                            , "She eats him up."
+                            , "It eats him up."
+                            ]
+            , test "third person noun" <|
+                \_ ->
+                    [ IndefiniteNoun (NounBase "dog") NoIrregularPlural
+                    , DefiniteNoun (NounBase "cat") NoIrregularPlural
+                    , ProperNoun (NounBase "the Chad")
+                    , ProperNoun (NounBase "Joe")
+                    , UncountableNoun (NounBase "water")
+                    , DefiniteUncountableNoun (NounBase "air")
+                    ]
+                        |> map NounSubject
+                        |> map testingSimplePresent
+                        |> map sentenceToString
+                        |> Expect.equal
+                            [ "A dog eats him up."
+                            , "The cat eats him up."
+                            , "The Chad eats him up."
+                            , "Joe eats him up."
+                            , "Water eats him up."
+                            , "The air eats him up."
+                            ]
+            , test "non third person pronouns" <|
+                \_ ->
+                    [ I, Me, You, We, Us, They, Them ]
+                        |> map PronounSubject
+                        |> map testingSimplePresent
+                        |> map sentenceToString
+                        |> Expect.equal
+                            [ "I eat him up."
+                            , "I eat him up."
+                            , "You eat him up."
+                            , "We eat him up."
+                            , "We eat him up."
+                            , "They eat him up."
+                            , "They eat him up."
+                            ]
+            , test "non third person noun" <|
+                \_ ->
+                    [ PluralNoun (NounBase "child") (IrregularPlural "children")
+                    , DefinitePluralNoun (NounBase "cat") NoIrregularPlural
+                    , ProperPluralNoun (NounBase "the Joneses")
+                    , ProperPluralNoun (NounBase "BMWs")
+                    ]
+                        |> map NounSubject
+                        |> map testingSimplePresent
+                        |> map sentenceToString
+                        |> Expect.equal
+                            [ "Children eat him up."
+                            , "The cats eat him up."
+                            , "The Joneses eat him up."
+                            , "BMWs eat him up."
+                            ]
             ]
         ]
