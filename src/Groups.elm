@@ -1,6 +1,6 @@
 module Groups exposing (..)
 
-import Word exposing (Noun, Pronoun, Punctuation, Word(..), toObject, toSubject)
+import Word exposing (FormattedWord(..), Noun, Pronoun, Punctuation, Word(..), toObject, toSubject, toThirdPerson, wordToString)
 import WordData exposing (NumberOfObjects(..), VerbData, getBasicVerb)
 
 
@@ -9,13 +9,18 @@ type Subject
     | PronounSubject Pronoun
 
 
-type alias SentenceParts =
-    { subject : Subject
-    , verbData : VerbData
-    , firstObject : Object
-    , secondObject : Object
-    , punctuation : Punctuation
-    }
+type Sentence
+    = SimplePresent Subject Predicate Punctuation
+
+
+sentenceToString : Sentence -> String
+sentenceToString sentence =
+    case sentence of
+        SimplePresent subject predicate punctuation ->
+            (subject |> subjectToWord |> Capital |> wordToString)
+                ++ " "
+                ++ (predicate |> predicateToThirdPerson |> predicateToString)
+                ++ (Punctuation punctuation |> BaseWord |> wordToString)
 
 
 subjectToWord : Subject -> Word
@@ -43,8 +48,33 @@ objectToWord nounLike =
             pronoun |> toObject |> Pronoun
 
 
+objectToSubject : Object -> Subject
+objectToSubject nounLike =
+    case nounLike of
+        NounObject noun ->
+            noun |> NounSubject
+
+        PronounObject pronoun ->
+            pronoun |> PronounSubject
+
+
 type Predicate
     = Predicate (List Word)
+
+
+predicateToThirdPerson : Predicate -> Predicate
+predicateToThirdPerson (Predicate words) =
+    case words of
+        (Verb verb) :: xs ->
+            (verb |> toThirdPerson |> Verb) :: xs |> Predicate
+
+        _ ->
+            words |> Predicate
+
+
+predicateToString : Predicate -> String
+predicateToString (Predicate words) =
+    words |> List.map (BaseWord >> wordToString) |> String.join " "
 
 
 toPredicate : ( Object, Object ) -> VerbData -> Predicate

@@ -3,7 +3,7 @@ module TestGroups exposing (..)
 import Expect
 import Groups exposing (..)
 import Test exposing (..)
-import Word exposing (Infinitive(..), IrregularPast(..), Noun(..), NounBase(..), Particle(..), Preposition(..), Pronoun(..), Verb(..), Word(..))
+import Word exposing (Infinitive(..), IrregularPast(..), Noun(..), NounBase(..), Particle(..), Preposition(..), Pronoun(..), Punctuation(..), Verb(..), Word(..))
 import WordData exposing (NumberOfObjects(..), VerbData)
 
 
@@ -130,4 +130,23 @@ testPredicate =
                          ]
                             |> Predicate
                         )
+        ]
+
+
+testingPredicate : Predicate
+testingPredicate =
+    VerbData "eat" (IrregularPast "ate") One (AdverbialParticle "up" |> Just) Nothing
+        |> toPredicate ( He |> PronounObject, toNounObject "notused" )
+
+
+testSentence : Test
+testSentence =
+    describe "sentenceToString"
+        [ describe "SimplePresent"
+            [ test "third person" <|
+                \_ ->
+                    SimplePresent (PronounSubject Her) testingPredicate Period
+                        |> sentenceToString
+                        |> Expect.equal "She eats him up."
+            ]
         ]

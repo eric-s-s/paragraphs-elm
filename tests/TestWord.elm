@@ -802,3 +802,241 @@ testWord =
         , test "SeparableParticle" <|
             \_ -> Particle (AdverbialParticle "def") |> wordToValue |> Expect.equal (RawValue "def")
         ]
+
+
+testFormattedWord : Test
+testFormattedWord =
+    describe "wordToString"
+        [ describe "BasicWord"
+            [ test "Noun" <|
+                \_ ->
+                    DefinitePluralNoun (NounBase "child") (IrregularPlural "children")
+                        |> Noun
+                        |> BaseWord
+                        |> wordToString
+                        |> Expect.equal "the children"
+            , test "Verb" <|
+                \_ ->
+                    ThirdPersonNegative (Infinitive "eat") NoIrregularPast
+                        |> Verb
+                        |> BaseWord
+                        |> wordToString
+                        |> Expect.equal "doesn't eat"
+            , test "Puncutation" <|
+                \_ ->
+                    ExclamationPoint
+                        |> Punctuation
+                        |> BaseWord
+                        |> wordToString
+                        |> Expect.equal "!"
+            , test "Pronoun" <|
+                \_ ->
+                    Him
+                        |> Pronoun
+                        |> BaseWord
+                        |> wordToString
+                        |> Expect.equal "him"
+            , test "BeVerb" <|
+                \_ ->
+                    Was
+                        |> BeVerb
+                        |> BaseWord
+                        |> wordToString
+                        |> Expect.equal "was"
+            , test "NegativBeVerb" <|
+                \_ ->
+                    Was
+                        |> NegativeBeVerb
+                        |> BaseWord
+                        |> wordToString
+                        |> Expect.equal "was not"
+            , test "Preposition" <|
+                \_ ->
+                    SimplePreposition "with"
+                        |> Preposition
+                        |> BaseWord
+                        |> wordToString
+                        |> Expect.equal "with"
+            , test "Particle" <|
+                \_ ->
+                    AdverbialParticle "away"
+                        |> Particle
+                        |> BaseWord
+                        |> wordToString
+                        |> Expect.equal "away"
+            ]
+        , describe "Bold"
+            [ test "Noun" <|
+                \_ ->
+                    DefinitePluralNoun (NounBase "child") (IrregularPlural "children")
+                        |> Noun
+                        |> Bold
+                        |> wordToString
+                        |> Expect.equal "<bold>the children</bold>"
+            , test "Verb" <|
+                \_ ->
+                    ThirdPersonNegative (Infinitive "eat") NoIrregularPast
+                        |> Verb
+                        |> Bold
+                        |> wordToString
+                        |> Expect.equal "<bold>doesn't eat</bold>"
+            , test "Puncutation" <|
+                \_ ->
+                    ExclamationPoint
+                        |> Punctuation
+                        |> Bold
+                        |> wordToString
+                        |> Expect.equal "<bold>!</bold>"
+            , test "Pronoun" <|
+                \_ ->
+                    Him
+                        |> Pronoun
+                        |> Bold
+                        |> wordToString
+                        |> Expect.equal "<bold>him</bold>"
+            , test "BeVerb" <|
+                \_ ->
+                    Was
+                        |> BeVerb
+                        |> Bold
+                        |> wordToString
+                        |> Expect.equal "<bold>was</bold>"
+            , test "NegativBeVerb" <|
+                \_ ->
+                    Was
+                        |> NegativeBeVerb
+                        |> Bold
+                        |> wordToString
+                        |> Expect.equal "<bold>was not</bold>"
+            , test "Preposition" <|
+                \_ ->
+                    SimplePreposition "with"
+                        |> Preposition
+                        |> Bold
+                        |> wordToString
+                        |> Expect.equal "<bold>with</bold>"
+            , test "Particle" <|
+                \_ ->
+                    AdverbialParticle "away"
+                        |> Particle
+                        |> Bold
+                        |> wordToString
+                        |> Expect.equal "<bold>away</bold>"
+            ]
+        , describe "Capital"
+            [ test "Noun" <|
+                \_ ->
+                    DefinitePluralNoun (NounBase "child") (IrregularPlural "children")
+                        |> Noun
+                        |> Capital
+                        |> wordToString
+                        |> Expect.equal "The children"
+            , test "Verb" <|
+                \_ ->
+                    ThirdPersonNegative (Infinitive "eat") NoIrregularPast
+                        |> Verb
+                        |> Capital
+                        |> wordToString
+                        |> Expect.equal "Doesn't eat"
+            , test "Puncutation" <|
+                \_ ->
+                    ExclamationPoint
+                        |> Punctuation
+                        |> Capital
+                        |> wordToString
+                        |> Expect.equal "!"
+            , test "Pronoun" <|
+                \_ ->
+                    Him
+                        |> Pronoun
+                        |> Capital
+                        |> wordToString
+                        |> Expect.equal "Him"
+            , test "BeVerb" <|
+                \_ ->
+                    Was
+                        |> BeVerb
+                        |> Capital
+                        |> wordToString
+                        |> Expect.equal "Was"
+            , test "NegativBeVerb" <|
+                \_ ->
+                    Was
+                        |> NegativeBeVerb
+                        |> Capital
+                        |> wordToString
+                        |> Expect.equal "Was not"
+            , test "Preposition" <|
+                \_ ->
+                    SimplePreposition "with"
+                        |> Preposition
+                        |> Capital
+                        |> wordToString
+                        |> Expect.equal "With"
+            , test "Particle" <|
+                \_ ->
+                    AdverbialParticle "away"
+                        |> Particle
+                        |> Capital
+                        |> wordToString
+                        |> Expect.equal "Away"
+            ]
+        , describe "BoldCapital"
+            [ test "Noun" <|
+                \_ ->
+                    DefinitePluralNoun (NounBase "child") (IrregularPlural "children")
+                        |> Noun
+                        |> BoldCapital
+                        |> wordToString
+                        |> Expect.equal "<bold>The children</bold>"
+            , test "Verb" <|
+                \_ ->
+                    ThirdPersonNegative (Infinitive "eat") NoIrregularPast
+                        |> Verb
+                        |> BoldCapital
+                        |> wordToString
+                        |> Expect.equal "<bold>Doesn't eat</bold>"
+            , test "Puncutation" <|
+                \_ ->
+                    ExclamationPoint
+                        |> Punctuation
+                        |> BoldCapital
+                        |> wordToString
+                        |> Expect.equal "<bold>!</bold>"
+            , test "Pronoun" <|
+                \_ ->
+                    Him
+                        |> Pronoun
+                        |> BoldCapital
+                        |> wordToString
+                        |> Expect.equal "<bold>Him</bold>"
+            , test "BeVerb" <|
+                \_ ->
+                    Was
+                        |> BeVerb
+                        |> BoldCapital
+                        |> wordToString
+                        |> Expect.equal "<bold>Was</bold>"
+            , test "NegativBeVerb" <|
+                \_ ->
+                    Was
+                        |> NegativeBeVerb
+                        |> BoldCapital
+                        |> wordToString
+                        |> Expect.equal "<bold>Was not</bold>"
+            , test "Preposition" <|
+                \_ ->
+                    SimplePreposition "with"
+                        |> Preposition
+                        |> BoldCapital
+                        |> wordToString
+                        |> Expect.equal "<bold>With</bold>"
+            , test "Particle" <|
+                \_ ->
+                    AdverbialParticle "away"
+                        |> Particle
+                        |> BoldCapital
+                        |> wordToString
+                        |> Expect.equal "<bold>Away</bold>"
+            ]
+        ]

@@ -24,6 +24,29 @@ type Word
     | Particle Particle
 
 
+type FormattedWord
+    = BaseWord Word
+    | Bold Word
+    | Capital Word
+    | BoldCapital Word
+
+
+wordToString : FormattedWord -> String
+wordToString word =
+    case word of
+        BaseWord x ->
+            x |> wordToValue |> getString
+
+        Bold x ->
+            x |> wordToValue |> getString |> makeBold
+
+        Capital x ->
+            x |> wordToValue |> getString |> capitalize
+
+        BoldCapital x ->
+            x |> wordToValue |> getString |> capitalize |> makeBold
+
+
 type RawValue
     = RawValue String
 
@@ -61,13 +84,6 @@ wordToValue word =
 
         Particle (AdverbialParticle x) ->
             x |> RawValue
-
-
-type FormattedWord
-    = BaseWord Word
-    | Bold Word
-    | CapitalOoooooops Word
-    | BoldCapital Word
 
 
 type Punctuation
@@ -660,3 +676,8 @@ capitalize word =
 
         char :: chars ->
             toUpper char :: chars |> String.fromList
+
+
+makeBold : String -> String
+makeBold word =
+    "<bold>" ++ word ++ "</bold>"
