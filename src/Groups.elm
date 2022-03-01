@@ -1,6 +1,20 @@
 module Groups exposing (..)
 
-import Word exposing (FormattedWord(..), Noun(..), Pronoun(..), Punctuation, Word(..), punctuationToRawValue, toObject, toSubject, toThirdPerson, wordToString)
+import Word
+    exposing
+        ( FormattedWord(..)
+        , Noun(..)
+        , Pronoun(..)
+        , Punctuation
+        , Verb
+        , Word(..)
+        , toNegative
+        , toObject
+        , toPast
+        , toSubject
+        , toThirdPerson
+        , wordToString
+        )
 import WordData exposing (NumberOfObjects(..), VerbData, getBasicVerb)
 
 
@@ -11,6 +25,9 @@ type Subject
 
 type Sentence
     = SimplePresent Subject Predicate Punctuation
+    | NegativeSimplePresent Subject Predicate Punctuation
+    | SimplePast Subject Predicate Punctuation
+    | NegativeSimplePast Subject Predicate Punctuation
 
 
 sentenceToString : Sentence -> String
@@ -18,10 +35,26 @@ sentenceToString sentence =
     case sentence of
         SimplePresent subject predicate punctuation ->
             if isThirdPerson subject then
-                sentencePartsToString subject (predicate |> predicateToThirdPerson) punctuation
+                sentencePartsToString subject (predicate |> transformVerb toThirdPerson) punctuation
 
             else
                 sentencePartsToString subject predicate punctuation
+
+        NegativeSimplePresent subject predicate punctuation ->
+            if isThirdPerson subject then
+                sentencePartsToString
+                    subject
+                    (predicate |> transformVerb (toThirdPerson >> toNegative))
+                    punctuation
+
+            else
+                sentencePartsToString subject (predicate |> transformVerb toNegative) punctuation
+
+        SimplePast subject predicate punctuation ->
+            sentencePartsToString subject (predicate |> transformVerb toPast) punctuation
+
+        NegativeSimplePast subject predicate punctuation ->
+            sentencePartsToString subject (predicate |> transformVerb (toPast >> toNegative)) punctuation
 
 
 sentencePartsToString : Subject -> Predicate -> Punctuation -> String
@@ -109,11 +142,11 @@ type Predicate
     = Predicate (List Word)
 
 
-predicateToThirdPerson : Predicate -> Predicate
-predicateToThirdPerson (Predicate words) =
+transformVerb : (Verb -> Verb) -> Predicate -> Predicate
+transformVerb transform (Predicate words) =
     case words of
         (Verb verb) :: xs ->
-            (verb |> toThirdPerson |> Verb) :: xs |> Predicate
+            (verb |> transform |> Verb) :: xs |> Predicate
 
         _ ->
             words |> Predicate
