@@ -100,45 +100,45 @@ lotsaVerbs =
 
 lotsaNouns : List Noun
 lotsaNouns =
-    [ BasicNoun (NounBase "ant") NoIrregularPlural
-    , BasicNoun (NounBase "apple") NoIrregularPlural
-    , BasicNoun (NounBase "baby") NoIrregularPlural
-    , BasicNoun (NounBase "banana") NoIrregularPlural
-    , BasicNoun (NounBase "bicycle") NoIrregularPlural
-    , BasicNoun (NounBase "book") NoIrregularPlural
-    , BasicNoun (NounBase "box") NoIrregularPlural
-    , BasicNoun (NounBase "bus") NoIrregularPlural
-    , BasicNoun (NounBase "car") NoIrregularPlural
-    , BasicNoun (NounBase "child") (IrregularPlural "children")
-    , BasicNoun (NounBase "cow") NoIrregularPlural
-    , BasicNoun (NounBase "eagle") NoIrregularPlural
-    , BasicNoun (NounBase "egg") NoIrregularPlural
-    , BasicNoun (NounBase "elephant") NoIrregularPlural
-    , BasicNoun (NounBase "finger") NoIrregularPlural
-    , BasicNoun (NounBase "fire fighter") NoIrregularPlural
-    , BasicNoun (NounBase "fish") (IrregularPlural "fish")
-    , BasicNoun (NounBase "house") NoIrregularPlural
-    , BasicNoun (NounBase "husband") NoIrregularPlural
-    , BasicNoun (NounBase "knife") NoIrregularPlural
-    , BasicNoun (NounBase "leaf") NoIrregularPlural
-    , BasicNoun (NounBase "nose") NoIrregularPlural
-    , BasicNoun (NounBase "octopus") NoIrregularPlural
-    , BasicNoun (NounBase "orange") NoIrregularPlural
-    , BasicNoun (NounBase "pen") NoIrregularPlural
-    , BasicNoun (NounBase "person") (IrregularPlural "people")
-    , BasicNoun (NounBase "pineapple") NoIrregularPlural
-    , BasicNoun (NounBase "pony") NoIrregularPlural
-    , BasicNoun (NounBase "school") NoIrregularPlural
-    , BasicNoun (NounBase "shark") NoIrregularPlural
-    , BasicNoun (NounBase "sheep") (IrregularPlural "sheep")
-    , BasicNoun (NounBase "table") NoIrregularPlural
-    , BasicNoun (NounBase "teacher") NoIrregularPlural
-    , BasicNoun (NounBase "tiger") NoIrregularPlural
-    , BasicNoun (NounBase "tree") NoIrregularPlural
-    , BasicNoun (NounBase "uncle") NoIrregularPlural
-    , BasicNoun (NounBase "watch") NoIrregularPlural
-    , BasicNoun (NounBase "wife") NoIrregularPlural
-    , BasicNoun (NounBase "witch") NoIrregularPlural
+    [ RawCountableNoun (NounBase "ant") NoIrregularPlural
+    , RawCountableNoun (NounBase "apple") NoIrregularPlural
+    , RawCountableNoun (NounBase "baby") NoIrregularPlural
+    , RawCountableNoun (NounBase "banana") NoIrregularPlural
+    , RawCountableNoun (NounBase "bicycle") NoIrregularPlural
+    , RawCountableNoun (NounBase "book") NoIrregularPlural
+    , RawCountableNoun (NounBase "box") NoIrregularPlural
+    , RawCountableNoun (NounBase "bus") NoIrregularPlural
+    , RawCountableNoun (NounBase "car") NoIrregularPlural
+    , RawCountableNoun (NounBase "child") (IrregularPlural "children")
+    , RawCountableNoun (NounBase "cow") NoIrregularPlural
+    , RawCountableNoun (NounBase "eagle") NoIrregularPlural
+    , RawCountableNoun (NounBase "egg") NoIrregularPlural
+    , RawCountableNoun (NounBase "elephant") NoIrregularPlural
+    , RawCountableNoun (NounBase "finger") NoIrregularPlural
+    , RawCountableNoun (NounBase "fire fighter") NoIrregularPlural
+    , RawCountableNoun (NounBase "fish") (IrregularPlural "fish")
+    , RawCountableNoun (NounBase "house") NoIrregularPlural
+    , RawCountableNoun (NounBase "husband") NoIrregularPlural
+    , RawCountableNoun (NounBase "knife") NoIrregularPlural
+    , RawCountableNoun (NounBase "leaf") NoIrregularPlural
+    , RawCountableNoun (NounBase "nose") NoIrregularPlural
+    , RawCountableNoun (NounBase "octopus") NoIrregularPlural
+    , RawCountableNoun (NounBase "orange") NoIrregularPlural
+    , RawCountableNoun (NounBase "pen") NoIrregularPlural
+    , RawCountableNoun (NounBase "person") (IrregularPlural "people")
+    , RawCountableNoun (NounBase "pineapple") NoIrregularPlural
+    , RawCountableNoun (NounBase "pony") NoIrregularPlural
+    , RawCountableNoun (NounBase "school") NoIrregularPlural
+    , RawCountableNoun (NounBase "shark") NoIrregularPlural
+    , RawCountableNoun (NounBase "sheep") (IrregularPlural "sheep")
+    , RawCountableNoun (NounBase "table") NoIrregularPlural
+    , RawCountableNoun (NounBase "teacher") NoIrregularPlural
+    , RawCountableNoun (NounBase "tiger") NoIrregularPlural
+    , RawCountableNoun (NounBase "tree") NoIrregularPlural
+    , RawCountableNoun (NounBase "uncle") NoIrregularPlural
+    , RawCountableNoun (NounBase "watch") NoIrregularPlural
+    , RawCountableNoun (NounBase "wife") NoIrregularPlural
+    , RawCountableNoun (NounBase "witch") NoIrregularPlural
     , UncountableNoun (NounBase "apple juice")
     , UncountableNoun (NounBase "cake")
     , UncountableNoun (NounBase "gold")

@@ -261,7 +261,7 @@ type IrregularPlural
 
 
 type Noun
-    = BasicNoun NounBase IrregularPlural
+    = RawCountableNoun NounBase IrregularPlural
     | IndefiniteNoun NounBase IrregularPlural
     | DefiniteNoun NounBase IrregularPlural
     | PluralNoun NounBase IrregularPlural
@@ -277,16 +277,16 @@ toOriginalNoun : Noun -> Noun
 toOriginalNoun noun =
     case noun of
         IndefiniteNoun a b ->
-            BasicNoun a b
+            RawCountableNoun a b
 
         DefiniteNoun a b ->
-            BasicNoun a b
+            RawCountableNoun a b
 
         PluralNoun a b ->
-            BasicNoun a b
+            RawCountableNoun a b
 
         DefinitePluralNoun a b ->
-            BasicNoun a b
+            RawCountableNoun a b
 
         DefiniteUncountableNoun a ->
             UncountableNoun a
@@ -301,7 +301,7 @@ toOriginalNoun noun =
 toDefinite : Noun -> Noun
 toDefinite noun =
     case noun of
-        BasicNoun a b ->
+        RawCountableNoun a b ->
             DefiniteNoun a b
 
         IndefiniteNoun a b ->
@@ -329,7 +329,7 @@ toDefinite noun =
 toIndefinite : Noun -> Noun
 toIndefinite noun =
     case noun of
-        BasicNoun a b ->
+        RawCountableNoun a b ->
             IndefiniteNoun a b
 
         DefiniteNoun a b ->
@@ -351,7 +351,10 @@ toIndefinite noun =
 toPlural : Noun -> Noun
 toPlural noun =
     case noun of
-        BasicNoun a b ->
+        RawCountableNoun a b ->
+            PluralNoun a b
+
+        IndefiniteNoun a b ->
             PluralNoun a b
 
         DefiniteNoun a b ->
@@ -391,7 +394,7 @@ nounToRawValue noun =
         IncorrectNoun value _ ->
             value |> RawValue
 
-        BasicNoun (NounBase value) _ ->
+        RawCountableNoun (NounBase value) _ ->
             value |> RawValue
 
         IndefiniteNoun (NounBase value) _ ->

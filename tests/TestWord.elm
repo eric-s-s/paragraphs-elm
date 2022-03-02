@@ -33,7 +33,7 @@ testNoun =
         [ describe "nounToRawValue"
             [ test "base noun to value" <|
                 \_ ->
-                    BasicNoun (NounBase "dog") NoIrregularPlural
+                    RawCountableNoun (NounBase "dog") NoIrregularPlural
                         |> testHelperNounToString
                         |> Expect.equal "dog"
             , test "indefinite noun to value as a" <|
@@ -133,29 +133,29 @@ testNoun =
         , describe "test toOriginalNoun"
             [ test "basic to basic" <|
                 \_ ->
-                    BasicNoun baseValue plural
+                    RawCountableNoun baseValue plural
                         |> toOriginalNoun
-                        |> Expect.equal (BasicNoun baseValue plural)
+                        |> Expect.equal (RawCountableNoun baseValue plural)
             , test "indefinite to basic" <|
                 \_ ->
                     IndefiniteNoun baseValue plural
                         |> toOriginalNoun
-                        |> Expect.equal (BasicNoun baseValue plural)
+                        |> Expect.equal (RawCountableNoun baseValue plural)
             , test "definite to basic" <|
                 \_ ->
                     DefiniteNoun baseValue plural
                         |> toOriginalNoun
-                        |> Expect.equal (BasicNoun baseValue plural)
+                        |> Expect.equal (RawCountableNoun baseValue plural)
             , test "plural to basic" <|
                 \_ ->
                     PluralNoun baseValue plural
                         |> toOriginalNoun
-                        |> Expect.equal (BasicNoun baseValue plural)
+                        |> Expect.equal (RawCountableNoun baseValue plural)
             , test "definite plural to basic" <|
                 \_ ->
                     DefinitePluralNoun baseValue plural
                         |> toOriginalNoun
-                        |> Expect.equal (BasicNoun baseValue plural)
+                        |> Expect.equal (RawCountableNoun baseValue plural)
             , test "uncountable to uncountable" <|
                 \_ ->
                     UncountableNoun baseValue
@@ -180,7 +180,7 @@ testNoun =
                 \_ ->
                     let
                         nouns =
-                            [ BasicNoun baseValue plural
+                            [ RawCountableNoun baseValue plural
                             , IndefiniteNoun baseValue plural
                             , DefiniteNoun baseValue plural
                             , PluralNoun baseValue plural
@@ -199,7 +199,7 @@ testNoun =
         , describe "toIndefinite"
             [ test "base, indefinite, definite noun" <|
                 \_ ->
-                    [ BasicNoun, IndefiniteNoun, DefiniteNoun ]
+                    [ RawCountableNoun, IndefiniteNoun, DefiniteNoun ]
                         |> map (\el -> el baseValue plural)
                         |> map toIndefinite
                         |> Expect.equal (List.repeat 3 (IndefiniteNoun baseValue plural))
@@ -259,7 +259,7 @@ testNoun =
         , describe "toDefinite"
             [ test "base, indefinite, definite noun" <|
                 \_ ->
-                    [ BasicNoun, IndefiniteNoun, DefiniteNoun ]
+                    [ RawCountableNoun, IndefiniteNoun, DefiniteNoun ]
                         |> map (\el -> el baseValue plural)
                         |> map toDefinite
                         |> Expect.equal (List.repeat 3 (DefiniteNoun baseValue plural))
@@ -312,7 +312,12 @@ testNoun =
                         |> Expect.equal nouns
             , test "basic to plural" <|
                 \_ ->
-                    BasicNoun baseValue plural
+                    RawCountableNoun baseValue plural
+                        |> toPlural
+                        |> Expect.equal (PluralNoun baseValue plural)
+            , test "indefinite to plural" <|
+                \_ ->
+                    IndefiniteNoun baseValue plural
                         |> toPlural
                         |> Expect.equal (PluralNoun baseValue plural)
             , test "definite to definite plural" <|
@@ -701,7 +706,7 @@ testWord =
     describe "toRawValue"
         [ test "Noun" <|
             \_ ->
-                [ BasicNoun (NounBase "cat") NoIrregularPlural
+                [ RawCountableNoun (NounBase "cat") NoIrregularPlural
                 , IndefiniteNoun (NounBase "ax") NoIrregularPlural
                 , DefiniteNoun (NounBase "thing") NoIrregularPlural
                 , PluralNoun (NounBase "dog") NoIrregularPlural
