@@ -23,9 +23,7 @@ import Word
         , Punctuation(..)
         , Verb(..)
         , Word(..)
-        , toIndefinite
         , toPlural
-        , toSubject
         )
 import WordData exposing (NumberOfObjects(..), VerbData)
 

@@ -1,9 +1,16 @@
 module Paragraphs exposing (..)
 
-import Html exposing (sub)
 import List exposing (filter, filterMap)
-import Sentences exposing (Predicate(..), Sentence(..), Subject(..), sentenceMap, sentenceToString, subjectToWord)
-import Word exposing (Noun(..), Word(..), toDefinite, toIndefinite, toOriginalNoun)
+import Sentences
+    exposing
+        ( Predicate(..)
+        , Sentence(..)
+        , Subject(..)
+        , sentenceMap
+        , sentenceToString
+        , subjectToWord
+        )
+import Word exposing (Noun(..), Word(..), toDefinite, toIndefinite)
 
 
 type Paragraph
