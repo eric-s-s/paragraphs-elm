@@ -21,6 +21,7 @@ import WordData exposing (NumberOfObjects(..), VerbData, getBasicVerb)
 type Subject
     = NounSubject Noun
     | PronounSubject Pronoun
+    | WrongSubject Word
 
 
 type Sentence
@@ -28,6 +29,34 @@ type Sentence
     | NegativeSimplePresent Subject Predicate Punctuation
     | SimplePast Subject Predicate Punctuation
     | NegativeSimplePast Subject Predicate Punctuation
+
+
+sentenceMap : (Word -> Word) -> Sentence -> Sentence
+sentenceMap function sentence =
+    case sentence of
+        SimplePresent subject (Predicate words) punctuation ->
+            SimplePresent
+                (subject |> subjectToWord |> function |> wordToSubject)
+                (words |> List.map function |> Predicate)
+                punctuation
+
+        NegativeSimplePresent subject (Predicate words) punctuation ->
+            NegativeSimplePresent
+                (subject |> subjectToWord |> function |> wordToSubject)
+                (words |> List.map function |> Predicate)
+                punctuation
+
+        SimplePast subject (Predicate words) punctuation ->
+            SimplePast
+                (subject |> subjectToWord |> function |> wordToSubject)
+                (words |> List.map function |> Predicate)
+                punctuation
+
+        NegativeSimplePast subject (Predicate words) punctuation ->
+            NegativeSimplePast
+                (subject |> subjectToWord |> function |> wordToSubject)
+                (words |> List.map function |> Predicate)
+                punctuation
 
 
 sentenceToString : Sentence -> String
@@ -102,6 +131,9 @@ isThirdPerson subject =
                 _ ->
                     False
 
+        _ ->
+            False
+
 
 subjectToWord : Subject -> Word
 subjectToWord nounLike =
@@ -111,6 +143,22 @@ subjectToWord nounLike =
 
         PronounSubject pronoun ->
             pronoun |> toSubject |> Pronoun
+
+        WrongSubject word ->
+            word
+
+
+wordToSubject : Word -> Subject
+wordToSubject word =
+    case word of
+        Noun noun ->
+            noun |> NounSubject
+
+        Pronoun pronoun ->
+            pronoun |> PronounSubject
+
+        _ ->
+            WrongSubject word
 
 
 type Object

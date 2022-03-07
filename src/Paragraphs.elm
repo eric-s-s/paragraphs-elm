@@ -2,8 +2,8 @@ module Paragraphs exposing (..)
 
 import Html exposing (sub)
 import List exposing (filter, filterMap)
-import Sentences exposing (Predicate(..), Sentence(..), Subject(..), sentenceToString, subjectToWord)
-import Word exposing (Noun(..), Word(..), toDefinite, toIndefinite)
+import Sentences exposing (Predicate(..), Sentence(..), Subject(..), sentenceMap, sentenceToString, subjectToWord)
+import Word exposing (Noun(..), Word(..), toDefinite, toIndefinite, toOriginalNoun)
 
 
 type Paragraph
@@ -26,68 +26,71 @@ formatNouns : Paragraph -> Paragraph
 formatNouns paragraph =
     case paragraph of
         UnformattedParagraph sentences ->
-            NounFormattedParagraph (sentences |> List.map makeSubjectIndefinite)
+            NounFormattedParagraph
+                (sentences
+                    |> List.map makeIndefinites
+                    |> changeRepeatedNounsToDefinite []
+                )
 
         _ ->
             NounFormattedParagraph []
 
 
-makeSubjectIndefinite : Sentence -> Sentence
-makeSubjectIndefinite sentence =
-    case sentence of
-        SimplePresent subject predicate punctuation ->
-            SimplePresent
-                (subject |> subjectToIndefiniteSubject)
-                predicate
-                punctuation
-
-        NegativeSimplePresent subject predicate punctuation ->
-            NegativeSimplePresent
-                (subject |> subjectToIndefiniteSubject)
-                predicate
-                punctuation
-
-        SimplePast subject predicate punctuation ->
-            SimplePast
-                (subject |> subjectToIndefiniteSubject)
-                predicate
-                punctuation
-
-        NegativeSimplePast subject predicate punctuation ->
-            NegativeSimplePast
-                (subject |> subjectToIndefiniteSubject)
-                predicate
-                punctuation
+makeIndefinites : Sentence -> Sentence
+makeIndefinites sentence =
+    sentenceMap safeIndefinite sentence
 
 
-subjectToIndefiniteSubject : Subject -> Subject
-subjectToIndefiniteSubject subject =
-    case subject of
-        NounSubject noun ->
+safeIndefinite : Word -> Word
+safeIndefinite word =
+    case word of
+        Noun noun ->
             case noun of
                 RawCountableNoun _ _ ->
-                    noun |> toIndefinite |> NounSubject
+                    noun |> toIndefinite |> Noun
 
                 _ ->
-                    subject
+                    word
 
         _ ->
-            subject
+            word
 
 
-getList : Predicate -> List Word
-getList (Predicate words) =
-    words
+changeRepeatedNounsToDefinite : List Noun -> List Sentence -> List Sentence
+changeRepeatedNounsToDefinite repeatedNouns sentences =
+    case sentences of
+        [] ->
+            []
+
+        first :: others ->
+            changeMarkedToDefinite repeatedNouns first
+                :: changeRepeatedNounsToDefinite
+                    (repeatedNouns ++ getDefiniteCandidates first)
+                    others
 
 
-getNouns : Sentence -> List Noun
-getNouns sentence =
-    []
+changeMarkedToDefinite : List Noun -> Sentence -> Sentence
+changeMarkedToDefinite markedNouns sentence =
+    sentenceMap (makeDefiniteIfMarked markedNouns) sentence
 
 
-getNounsFromPredicate : Predicate -> List Noun
-getNounsFromPredicate (Predicate word) =
-    []
+makeDefiniteIfMarked : List Noun -> Word -> Word
+makeDefiniteIfMarked markedNouns word =
+    case word of
+        Noun noun ->
+            if List.member noun markedNouns then
+                noun |> toDefinite |> Noun
+
+            else
+                word
+
+        _ ->
+            word
+
+
+getDefiniteCandidates : Sentence -> List Noun
+getDefiniteCandidates sentence =
+    sentence |> sentenceToWordList |> filterMap wordToNoun |> filter allowsDefiniteArticle
 
 
 allowsDefiniteArticle : Noun -> Bool
@@ -133,13 +136,3 @@ sentenceToWordList sentence =
 
         NegativeSimplePast subject (Predicate words) punctuation ->
             subjectToWord subject :: words ++ [ punctuation |> Punctuation ]
-
-
-getDefiniteCandidates : Sentence -> List Noun
-getDefiniteCandidates sentence =
-    sentence |> sentenceToWordList |> filterMap wordToNoun |> filter allowsDefiniteArticle
-
-
-transformToDefinite : List Noun -> List Sentence -> List Sentence
-transformToDefinite definiteNouns sentences =
-    []
