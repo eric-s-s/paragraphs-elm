@@ -439,18 +439,20 @@ addIndefinteArticle word =
 
 addPlural : String -> String
 addPlural word =
-    let
-        vEndings =
-            [ "alf", "elf", "arf", "eaf", "oaf", "olf" ]
-    in
     if endsWith "ife" word then
         dropRight 3 word ++ "ives"
 
-    else if any (\el -> endsWith el word) vEndings then
-        dropRight 1 word ++ "ves"
-
     else
-        addS word
+        let
+            vEndings : List String
+            vEndings =
+                [ "alf", "elf", "arf", "eaf", "oaf", "olf" ]
+        in
+        if any (\el -> endsWith el word) vEndings then
+            dropRight 1 word ++ "ves"
+
+        else
+            addS word
 
 
 type Infinitive

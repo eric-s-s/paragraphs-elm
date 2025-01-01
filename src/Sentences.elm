@@ -208,6 +208,7 @@ predicateToString (Predicate words) =
 toPredicate : ( Object, Object ) -> VerbData -> Predicate
 toPredicate ( firstObject, secondObject ) verbData =
     let
+        verb : Word
         verb =
             getBasicVerb verbData |> Verb
     in
