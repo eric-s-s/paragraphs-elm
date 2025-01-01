@@ -8,13 +8,19 @@ it'll be for a static webpage, i hope
 
 ## Installation
 
-you need ELM 0.19.1
+you need [ELM 0.19.1](https://guide.elm-lang.org/install/elm)
 
 ## Dev
 
 also
 
 ```shell
-npm install -g elm-test elm-format
+npm install
 ```
 
+tests run with
+
+```shell
+npx elm-test
+npx elm-format . --validate
+```
