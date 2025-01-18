@@ -24,3 +24,11 @@ tests run with
 npx elm-test
 npx elm-format . --validate
 ```
+
+## Compiling
+
+The following will create a main.js file which is picked up by the index.html file in the root of the project
+
+```shell
+npx elm make src/Main.elm --output=main.js
+```
