@@ -1,6 +1,16 @@
 module WordData exposing (..)
 
-import Word exposing (Infinitive(..), IrregularPast(..), Particle(..), Preposition(..), Verb(..))
+import Word
+    exposing
+        ( Infinitive(..)
+        , IrregularPast(..)
+        , IrregularPlural(..)
+        , Noun(..)
+        , NounBase(..)
+        , Particle(..)
+        , Preposition(..)
+        , Verb(..)
+        )
 
 
 type NumberOfObjects
@@ -85,4 +95,72 @@ lotsaVerbs =
     , VerbData "use" NoIrregularPast One Nothing Nothing
     , VerbData "wash" NoIrregularPast One Nothing Nothing
     , VerbData "wear" (IrregularPast "wore") One Nothing Nothing
+    ]
+
+
+lotsaNouns : List Noun
+lotsaNouns =
+    [ RawCountableNoun (NounBase "ant") NoIrregularPlural
+    , RawCountableNoun (NounBase "apple") NoIrregularPlural
+    , RawCountableNoun (NounBase "baby") NoIrregularPlural
+    , RawCountableNoun (NounBase "banana") NoIrregularPlural
+    , RawCountableNoun (NounBase "bicycle") NoIrregularPlural
+    , RawCountableNoun (NounBase "book") NoIrregularPlural
+    , RawCountableNoun (NounBase "box") NoIrregularPlural
+    , RawCountableNoun (NounBase "bus") NoIrregularPlural
+    , RawCountableNoun (NounBase "car") NoIrregularPlural
+    , RawCountableNoun (NounBase "child") (IrregularPlural "children")
+    , RawCountableNoun (NounBase "cow") NoIrregularPlural
+    , RawCountableNoun (NounBase "eagle") NoIrregularPlural
+    , RawCountableNoun (NounBase "egg") NoIrregularPlural
+    , RawCountableNoun (NounBase "elephant") NoIrregularPlural
+    , RawCountableNoun (NounBase "finger") NoIrregularPlural
+    , RawCountableNoun (NounBase "fire fighter") NoIrregularPlural
+    , RawCountableNoun (NounBase "fish") (IrregularPlural "fish")
+    , RawCountableNoun (NounBase "house") NoIrregularPlural
+    , RawCountableNoun (NounBase "husband") NoIrregularPlural
+    , RawCountableNoun (NounBase "knife") NoIrregularPlural
+    , RawCountableNoun (NounBase "leaf") NoIrregularPlural
+    , RawCountableNoun (NounBase "nose") NoIrregularPlural
+    , RawCountableNoun (NounBase "octopus") NoIrregularPlural
+    , RawCountableNoun (NounBase "orange") NoIrregularPlural
+    , RawCountableNoun (NounBase "pen") NoIrregularPlural
+    , RawCountableNoun (NounBase "person") (IrregularPlural "people")
+    , RawCountableNoun (NounBase "pineapple") NoIrregularPlural
+    , RawCountableNoun (NounBase "pony") NoIrregularPlural
+    , RawCountableNoun (NounBase "school") NoIrregularPlural
+    , RawCountableNoun (NounBase "shark") NoIrregularPlural
+    , RawCountableNoun (NounBase "sheep") (IrregularPlural "sheep")
+    , RawCountableNoun (NounBase "table") NoIrregularPlural
+    , RawCountableNoun (NounBase "teacher") NoIrregularPlural
+    , RawCountableNoun (NounBase "tiger") NoIrregularPlural
+    , RawCountableNoun (NounBase "tree") NoIrregularPlural
+    , RawCountableNoun (NounBase "uncle") NoIrregularPlural
+    , RawCountableNoun (NounBase "watch") NoIrregularPlural
+    , RawCountableNoun (NounBase "wife") NoIrregularPlural
+    , RawCountableNoun (NounBase "witch") NoIrregularPlural
+    , UncountableNoun (NounBase "apple juice")
+    , UncountableNoun (NounBase "cake")
+    , UncountableNoun (NounBase "gold")
+    , UncountableNoun (NounBase "hair")
+    , UncountableNoun (NounBase "homework")
+    , UncountableNoun (NounBase "ice cream")
+    , UncountableNoun (NounBase "lightning")
+    , UncountableNoun (NounBase "milk")
+    , UncountableNoun (NounBase "money")
+    , UncountableNoun (NounBase "pizza")
+    , UncountableNoun (NounBase "poop")
+    , UncountableNoun (NounBase "rice")
+    , UncountableNoun (NounBase "sand")
+    , UncountableNoun (NounBase "stinky tofu")
+    , UncountableNoun (NounBase "tea")
+    , UncountableNoun (NounBase "thunder")
+    , UncountableNoun (NounBase "water")
+    , ProperNoun (NounBase "Tom")
+    , ProperNoun (NounBase "Dick")
+    , ProperNoun (NounBase "Harry")
+    , ProperNoun (NounBase "Batman")
+    , ProperPluralNoun (NounBase "the Joneses")
+    , ProperPluralNoun (NounBase "the Avengers")
+    , ProperPluralNoun (NounBase "Ferraris")
     ]

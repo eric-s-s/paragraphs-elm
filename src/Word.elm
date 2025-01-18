@@ -24,6 +24,29 @@ type Word
     | Particle Particle
 
 
+type FormattedWord
+    = BaseWord Word
+    | Bold Word
+    | Capital Word
+    | BoldCapital Word
+
+
+wordToString : FormattedWord -> String
+wordToString word =
+    case word of
+        BaseWord x ->
+            x |> wordToValue |> getString
+
+        Bold x ->
+            x |> wordToValue |> getString |> makeBold
+
+        Capital x ->
+            x |> wordToValue |> getString |> capitalize
+
+        BoldCapital x ->
+            x |> wordToValue |> getString |> capitalize |> makeBold
+
+
 type RawValue
     = RawValue String
 
@@ -61,13 +84,6 @@ wordToValue word =
 
         Particle (AdverbialParticle x) ->
             x |> RawValue
-
-
-type FormattedWord
-    = BaseWord Word
-    | Bold Word
-    | CapitalOoooooops Word
-    | BoldCapital Word
 
 
 type Punctuation
@@ -235,8 +251,8 @@ pronounToRawValue value =
             "them" |> RawValue
 
 
-type BaseNoun
-    = BaseNoun String
+type NounBase
+    = NounBase String
 
 
 type IrregularPlural
@@ -245,15 +261,15 @@ type IrregularPlural
 
 
 type Noun
-    = BasicNoun BaseNoun IrregularPlural
-    | IndefiniteNoun BaseNoun IrregularPlural
-    | DefiniteNoun BaseNoun IrregularPlural
-    | PluralNoun BaseNoun IrregularPlural
-    | DefinitePluralNoun BaseNoun IrregularPlural
-    | UncountableNoun BaseNoun
-    | DefiniteUncountableNoun BaseNoun
-    | ProperNoun BaseNoun
-    | ProperPluralNoun BaseNoun
+    = RawCountableNoun NounBase IrregularPlural
+    | IndefiniteNoun NounBase IrregularPlural
+    | DefiniteNoun NounBase IrregularPlural
+    | PluralNoun NounBase IrregularPlural
+    | DefinitePluralNoun NounBase IrregularPlural
+    | UncountableNoun NounBase
+    | DefiniteUncountableNoun NounBase
+    | ProperNoun NounBase
+    | ProperPluralNoun NounBase
     | IncorrectNoun String Noun
 
 
@@ -261,16 +277,16 @@ toOriginalNoun : Noun -> Noun
 toOriginalNoun noun =
     case noun of
         IndefiniteNoun a b ->
-            BasicNoun a b
+            RawCountableNoun a b
 
         DefiniteNoun a b ->
-            BasicNoun a b
+            RawCountableNoun a b
 
         PluralNoun a b ->
-            BasicNoun a b
+            RawCountableNoun a b
 
         DefinitePluralNoun a b ->
-            BasicNoun a b
+            RawCountableNoun a b
 
         DefiniteUncountableNoun a ->
             UncountableNoun a
@@ -285,7 +301,7 @@ toOriginalNoun noun =
 toDefinite : Noun -> Noun
 toDefinite noun =
     case noun of
-        BasicNoun a b ->
+        RawCountableNoun a b ->
             DefiniteNoun a b
 
         IndefiniteNoun a b ->
@@ -297,10 +313,10 @@ toDefinite noun =
         UncountableNoun a ->
             DefiniteUncountableNoun a
 
-        ProperNoun (BaseNoun a) ->
+        ProperNoun (NounBase a) ->
             IncorrectNoun ("the " ++ a) noun
 
-        ProperPluralNoun (BaseNoun a) ->
+        ProperPluralNoun (NounBase a) ->
             IncorrectNoun ("the " ++ a) noun
 
         IncorrectNoun value original ->
@@ -313,7 +329,7 @@ toDefinite noun =
 toIndefinite : Noun -> Noun
 toIndefinite noun =
     case noun of
-        BasicNoun a b ->
+        RawCountableNoun a b ->
             IndefiniteNoun a b
 
         DefiniteNoun a b ->
@@ -335,7 +351,10 @@ toIndefinite noun =
 toPlural : Noun -> Noun
 toPlural noun =
     case noun of
-        BasicNoun a b ->
+        RawCountableNoun a b ->
+            PluralNoun a b
+
+        IndefiniteNoun a b ->
             PluralNoun a b
 
         DefiniteNoun a b ->
@@ -375,37 +394,37 @@ nounToRawValue noun =
         IncorrectNoun value _ ->
             value |> RawValue
 
-        BasicNoun (BaseNoun value) _ ->
+        RawCountableNoun (NounBase value) _ ->
             value |> RawValue
 
-        IndefiniteNoun (BaseNoun value) _ ->
+        IndefiniteNoun (NounBase value) _ ->
             addIndefinteArticle value |> RawValue
 
-        DefiniteNoun (BaseNoun value) _ ->
+        DefiniteNoun (NounBase value) _ ->
             "the " ++ value |> RawValue
 
         PluralNoun _ (IrregularPlural value) ->
             value |> RawValue
 
-        PluralNoun (BaseNoun value) _ ->
+        PluralNoun (NounBase value) _ ->
             addPlural value |> RawValue
 
         DefinitePluralNoun _ (IrregularPlural value) ->
             "the " ++ value |> RawValue
 
-        DefinitePluralNoun (BaseNoun value) _ ->
+        DefinitePluralNoun (NounBase value) _ ->
             "the " ++ addPlural value |> RawValue
 
-        UncountableNoun (BaseNoun value) ->
+        UncountableNoun (NounBase value) ->
             value |> RawValue
 
-        DefiniteUncountableNoun (BaseNoun value) ->
+        DefiniteUncountableNoun (NounBase value) ->
             "the " ++ value |> RawValue
 
-        ProperNoun (BaseNoun value) ->
+        ProperNoun (NounBase value) ->
             value |> RawValue
 
-        ProperPluralNoun (BaseNoun value) ->
+        ProperPluralNoun (NounBase value) ->
             value |> RawValue
 
 
@@ -420,18 +439,20 @@ addIndefinteArticle word =
 
 addPlural : String -> String
 addPlural word =
-    let
-        vEndings =
-            [ "alf", "elf", "arf", "eaf", "oaf", "olf" ]
-    in
     if endsWith "ife" word then
         dropRight 3 word ++ "ives"
 
-    else if any (\el -> endsWith el word) vEndings then
-        dropRight 1 word ++ "ves"
-
     else
-        addS word
+        let
+            vEndings : List String
+            vEndings =
+                [ "alf", "elf", "arf", "eaf", "oaf", "olf" ]
+        in
+        if any (\el -> endsWith el word) vEndings then
+            dropRight 1 word ++ "ves"
+
+        else
+            addS word
 
 
 type Infinitive
@@ -660,3 +681,8 @@ capitalize word =
 
         char :: chars ->
             toUpper char :: chars |> String.fromList
+
+
+makeBold : String -> String
+makeBold word =
+    "<bold>" ++ word ++ "</bold>"

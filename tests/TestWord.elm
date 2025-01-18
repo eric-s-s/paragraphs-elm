@@ -17,9 +17,9 @@ testHelperNounToString =
     nounToRawValue >> testHelperRawValueToString
 
 
-baseValue : BaseNoun
+baseValue : NounBase
 baseValue =
-    BaseNoun "nonsense"
+    NounBase "nonsense"
 
 
 plural : IrregularPlural
@@ -33,66 +33,66 @@ testNoun =
         [ describe "nounToRawValue"
             [ test "base noun to value" <|
                 \_ ->
-                    BasicNoun (BaseNoun "dog") NoIrregularPlural
+                    RawCountableNoun (NounBase "dog") NoIrregularPlural
                         |> testHelperNounToString
                         |> Expect.equal "dog"
             , test "indefinite noun to value as a" <|
                 \_ ->
                     [ "dog", "cat", "mouse" ]
-                        |> map (\el -> IndefiniteNoun (BaseNoun el) NoIrregularPlural)
+                        |> map (\el -> IndefiniteNoun (NounBase el) NoIrregularPlural)
                         |> map testHelperNounToString
                         |> Expect.equal [ "a dog", "a cat", "a mouse" ]
             , test "indefinite noun to value as an" <|
                 \_ ->
                     split "" "aeiouAEIOU"
-                        |> map (\el -> IndefiniteNoun (BaseNoun el) NoIrregularPlural)
+                        |> map (\el -> IndefiniteNoun (NounBase el) NoIrregularPlural)
                         |> map testHelperNounToString
                         |> join ", "
                         |> Expect.equal
                             "an a, an e, an i, an o, an u, an A, an E, an I, an O, an U"
             , test "definite noun to value" <|
                 \_ ->
-                    DefiniteNoun (BaseNoun "dog") NoIrregularPlural
+                    DefiniteNoun (NounBase "dog") NoIrregularPlural
                         |> testHelperNounToString
                         |> Expect.equal "the dog"
             , test "plural noun to value irregular" <|
                 \_ ->
-                    PluralNoun (BaseNoun "dog") (IrregularPlural "doggies")
+                    PluralNoun (NounBase "dog") (IrregularPlural "doggies")
                         |> testHelperNounToString
                         |> Expect.equal "doggies"
             , test "plural noun to value s ending" <|
                 \_ ->
-                    PluralNoun (BaseNoun "dog") NoIrregularPlural
+                    PluralNoun (NounBase "dog") NoIrregularPlural
                         |> testHelperNounToString
                         |> Expect.equal "dogs"
             , test "plural noun to value es ending" <|
                 \_ ->
                     [ "mass", "bobo", "ex", "watch", "dish" ]
-                        |> map (\el -> PluralNoun (BaseNoun el) NoIrregularPlural)
+                        |> map (\el -> PluralNoun (NounBase el) NoIrregularPlural)
                         |> map testHelperNounToString
                         |> Expect.equal [ "masses", "boboes", "exes", "watches", "dishes" ]
             , test "plural noun to value y as vowel" <|
                 \_ ->
                     [ "day", "boy", "caddy", "baby", "key" ]
-                        |> map (\el -> PluralNoun (BaseNoun el) NoIrregularPlural)
+                        |> map (\el -> PluralNoun (NounBase el) NoIrregularPlural)
                         |> map testHelperNounToString
                         |> Expect.equal [ "days", "boys", "caddies", "babies", "keys" ]
             , test "plural noun to value f endings" <|
                 \_ ->
                     [ "life", "waif", "calf", "leaf", "wolf", "wharf" ]
-                        |> map (\el -> PluralNoun (BaseNoun el) NoIrregularPlural)
+                        |> map (\el -> PluralNoun (NounBase el) NoIrregularPlural)
                         |> map testHelperNounToString
                         |> Expect.equal
                             [ "lives", "waifs", "calves", "leaves", "wolves", "wharves" ]
             , test "definite plural noun to value irregular" <|
                 \_ ->
-                    DefinitePluralNoun (BaseNoun "dog") (IrregularPlural "doggies")
+                    DefinitePluralNoun (NounBase "dog") (IrregularPlural "doggies")
                         |> testHelperNounToString
                         |> Expect.equal "the doggies"
             , test "definite plural noun to value" <|
                 \_ ->
                     [ "life", "waif", "baby", "day", "bobo", "ex", "dog" ]
-                        |> map (\el -> DefinitePluralNoun (BaseNoun el) NoIrregularPlural)
+                        |> map (\el -> DefinitePluralNoun (NounBase el) NoIrregularPlural)
                         |> map testHelperNounToString
                         |> Expect.equal
                             [ "the lives"
@@ -105,27 +105,27 @@ testNoun =
                             ]
             , test "uncountable noun to value" <|
                 \_ ->
-                    UncountableNoun (BaseNoun "water")
+                    UncountableNoun (NounBase "water")
                         |> testHelperNounToString
                         |> Expect.equal "water"
             , test "definite uncountable noun to value" <|
                 \_ ->
-                    DefiniteUncountableNoun (BaseNoun "water")
+                    DefiniteUncountableNoun (NounBase "water")
                         |> testHelperNounToString
                         |> Expect.equal "the water"
             , test "proper noun to value" <|
                 \_ ->
-                    ProperNoun (BaseNoun "Eric")
+                    ProperNoun (NounBase "Eric")
                         |> testHelperNounToString
                         |> Expect.equal "Eric"
             , test "proper plural noun to value" <|
                 \_ ->
-                    ProperPluralNoun (BaseNoun "the Bobs")
+                    ProperPluralNoun (NounBase "the Bobs")
                         |> testHelperNounToString
                         |> Expect.equal "the Bobs"
             , test "incorrect noun to value" <|
                 \_ ->
-                    ProperPluralNoun (BaseNoun "the Bobs")
+                    ProperPluralNoun (NounBase "the Bobs")
                         |> IncorrectNoun "the the Bobs"
                         |> testHelperNounToString
                         |> Expect.equal "the the Bobs"
@@ -133,29 +133,29 @@ testNoun =
         , describe "test toOriginalNoun"
             [ test "basic to basic" <|
                 \_ ->
-                    BasicNoun baseValue plural
+                    RawCountableNoun baseValue plural
                         |> toOriginalNoun
-                        |> Expect.equal (BasicNoun baseValue plural)
+                        |> Expect.equal (RawCountableNoun baseValue plural)
             , test "indefinite to basic" <|
                 \_ ->
                     IndefiniteNoun baseValue plural
                         |> toOriginalNoun
-                        |> Expect.equal (BasicNoun baseValue plural)
+                        |> Expect.equal (RawCountableNoun baseValue plural)
             , test "definite to basic" <|
                 \_ ->
                     DefiniteNoun baseValue plural
                         |> toOriginalNoun
-                        |> Expect.equal (BasicNoun baseValue plural)
+                        |> Expect.equal (RawCountableNoun baseValue plural)
             , test "plural to basic" <|
                 \_ ->
                     PluralNoun baseValue plural
                         |> toOriginalNoun
-                        |> Expect.equal (BasicNoun baseValue plural)
+                        |> Expect.equal (RawCountableNoun baseValue plural)
             , test "definite plural to basic" <|
                 \_ ->
                     DefinitePluralNoun baseValue plural
                         |> toOriginalNoun
-                        |> Expect.equal (BasicNoun baseValue plural)
+                        |> Expect.equal (RawCountableNoun baseValue plural)
             , test "uncountable to uncountable" <|
                 \_ ->
                     UncountableNoun baseValue
@@ -180,7 +180,7 @@ testNoun =
                 \_ ->
                     let
                         nouns =
-                            [ BasicNoun baseValue plural
+                            [ RawCountableNoun baseValue plural
                             , IndefiniteNoun baseValue plural
                             , DefiniteNoun baseValue plural
                             , PluralNoun baseValue plural
@@ -199,7 +199,7 @@ testNoun =
         , describe "toIndefinite"
             [ test "base, indefinite, definite noun" <|
                 \_ ->
-                    [ BasicNoun, IndefiniteNoun, DefiniteNoun ]
+                    [ RawCountableNoun, IndefiniteNoun, DefiniteNoun ]
                         |> map (\el -> el baseValue plural)
                         |> map toIndefinite
                         |> Expect.equal (List.repeat 3 (IndefiniteNoun baseValue plural))
@@ -208,7 +208,7 @@ testNoun =
                     let
                         nouns =
                             [ "dog", "ape" ]
-                                |> map (\el -> PluralNoun (BaseNoun el) NoIrregularPlural)
+                                |> map (\el -> PluralNoun (NounBase el) NoIrregularPlural)
                     in
                     nouns
                         |> map toIndefinite
@@ -218,7 +218,7 @@ testNoun =
                     let
                         nouns =
                             [ "cat", "owl" ]
-                                |> map (\el -> DefinitePluralNoun (BaseNoun el) NoIrregularPlural)
+                                |> map (\el -> DefinitePluralNoun (NounBase el) NoIrregularPlural)
                     in
                     nouns
                         |> map toIndefinite
@@ -227,8 +227,8 @@ testNoun =
                 \_ ->
                     let
                         nouns =
-                            [ UncountableNoun (BaseNoun "water")
-                            , DefiniteUncountableNoun (BaseNoun "unstuff")
+                            [ UncountableNoun (NounBase "water")
+                            , DefiniteUncountableNoun (NounBase "unstuff")
                             ]
                     in
                     nouns
@@ -243,8 +243,8 @@ testNoun =
                 \_ ->
                     let
                         nouns =
-                            [ ProperNoun (BaseNoun "Eric")
-                            , ProperPluralNoun (BaseNoun "BMWs")
+                            [ ProperNoun (NounBase "Eric")
+                            , ProperPluralNoun (NounBase "BMWs")
                             ]
                     in
                     nouns
@@ -259,7 +259,7 @@ testNoun =
         , describe "toDefinite"
             [ test "base, indefinite, definite noun" <|
                 \_ ->
-                    [ BasicNoun, IndefiniteNoun, DefiniteNoun ]
+                    [ RawCountableNoun, IndefiniteNoun, DefiniteNoun ]
                         |> map (\el -> el baseValue plural)
                         |> map toDefinite
                         |> Expect.equal (List.repeat 3 (DefiniteNoun baseValue plural))
@@ -288,7 +288,7 @@ testNoun =
                 \_ ->
                     let
                         inner =
-                            baseValue |> (\(BaseNoun el) -> el)
+                            baseValue |> (\(NounBase el) -> el)
 
                         noun =
                             ProperNoun baseValue
@@ -312,7 +312,12 @@ testNoun =
                         |> Expect.equal nouns
             , test "basic to plural" <|
                 \_ ->
-                    BasicNoun baseValue plural
+                    RawCountableNoun baseValue plural
+                        |> toPlural
+                        |> Expect.equal (PluralNoun baseValue plural)
+            , test "indefinite to plural" <|
+                \_ ->
+                    IndefiniteNoun baseValue plural
                         |> toPlural
                         |> Expect.equal (PluralNoun baseValue plural)
             , test "definite to definite plural" <|
@@ -322,19 +327,19 @@ testNoun =
                         |> Expect.equal (DefinitePluralNoun baseValue plural)
             , test "proper to incorrect" <|
                 \_ ->
-                    ProperNoun (BaseNoun "Jody")
+                    ProperNoun (NounBase "Jody")
                         |> toPlural
-                        |> Expect.equal (IncorrectNoun "Jodies" (ProperNoun (BaseNoun "Jody")))
+                        |> Expect.equal (IncorrectNoun "Jodies" (ProperNoun (NounBase "Jody")))
             , test "uncountable to incorrect" <|
                 \_ ->
-                    UncountableNoun (BaseNoun "fizz")
+                    UncountableNoun (NounBase "fizz")
                         |> toPlural
-                        |> Expect.equal (IncorrectNoun "fizzes" (UncountableNoun (BaseNoun "fizz")))
+                        |> Expect.equal (IncorrectNoun "fizzes" (UncountableNoun (NounBase "fizz")))
             , test "definite uncountable to incorrect" <|
                 \_ ->
-                    DefiniteUncountableNoun (BaseNoun "fizz")
+                    DefiniteUncountableNoun (NounBase "fizz")
                         |> toPlural
-                        |> Expect.equal (IncorrectNoun "the fizzes" (DefiniteUncountableNoun (BaseNoun "fizz")))
+                        |> Expect.equal (IncorrectNoun "the fizzes" (DefiniteUncountableNoun (NounBase "fizz")))
             ]
         ]
 
@@ -701,15 +706,15 @@ testWord =
     describe "toRawValue"
         [ test "Noun" <|
             \_ ->
-                [ BasicNoun (BaseNoun "cat") NoIrregularPlural
-                , IndefiniteNoun (BaseNoun "ax") NoIrregularPlural
-                , DefiniteNoun (BaseNoun "thing") NoIrregularPlural
-                , PluralNoun (BaseNoun "dog") NoIrregularPlural
+                [ RawCountableNoun (NounBase "cat") NoIrregularPlural
+                , IndefiniteNoun (NounBase "ax") NoIrregularPlural
+                , DefiniteNoun (NounBase "thing") NoIrregularPlural
+                , PluralNoun (NounBase "dog") NoIrregularPlural
                 , DefinitePluralNoun baseValue (IrregularPlural "thingen")
-                , UncountableNoun (BaseNoun "air")
-                , DefiniteUncountableNoun (BaseNoun "water")
-                , ProperNoun (BaseNoun "Eric")
-                , ProperPluralNoun (BaseNoun "the Joes")
+                , UncountableNoun (NounBase "air")
+                , DefiniteUncountableNoun (NounBase "water")
+                , ProperNoun (NounBase "Eric")
+                , ProperPluralNoun (NounBase "the Joes")
                 , IncorrectNoun "oops" (ProperNoun baseValue)
                 ]
                     |> map Noun
@@ -801,4 +806,242 @@ testWord =
             \_ -> Preposition (SimplePreposition "abc") |> wordToValue |> Expect.equal (RawValue "abc")
         , test "SeparableParticle" <|
             \_ -> Particle (AdverbialParticle "def") |> wordToValue |> Expect.equal (RawValue "def")
+        ]
+
+
+testFormattedWord : Test
+testFormattedWord =
+    describe "wordToString"
+        [ describe "BasicWord"
+            [ test "Noun" <|
+                \_ ->
+                    DefinitePluralNoun (NounBase "child") (IrregularPlural "children")
+                        |> Noun
+                        |> BaseWord
+                        |> wordToString
+                        |> Expect.equal "the children"
+            , test "Verb" <|
+                \_ ->
+                    ThirdPersonNegative (Infinitive "eat") NoIrregularPast
+                        |> Verb
+                        |> BaseWord
+                        |> wordToString
+                        |> Expect.equal "doesn't eat"
+            , test "Puncutation" <|
+                \_ ->
+                    ExclamationPoint
+                        |> Punctuation
+                        |> BaseWord
+                        |> wordToString
+                        |> Expect.equal "!"
+            , test "Pronoun" <|
+                \_ ->
+                    Him
+                        |> Pronoun
+                        |> BaseWord
+                        |> wordToString
+                        |> Expect.equal "him"
+            , test "BeVerb" <|
+                \_ ->
+                    Was
+                        |> BeVerb
+                        |> BaseWord
+                        |> wordToString
+                        |> Expect.equal "was"
+            , test "NegativBeVerb" <|
+                \_ ->
+                    Was
+                        |> NegativeBeVerb
+                        |> BaseWord
+                        |> wordToString
+                        |> Expect.equal "was not"
+            , test "Preposition" <|
+                \_ ->
+                    SimplePreposition "with"
+                        |> Preposition
+                        |> BaseWord
+                        |> wordToString
+                        |> Expect.equal "with"
+            , test "Particle" <|
+                \_ ->
+                    AdverbialParticle "away"
+                        |> Particle
+                        |> BaseWord
+                        |> wordToString
+                        |> Expect.equal "away"
+            ]
+        , describe "Bold"
+            [ test "Noun" <|
+                \_ ->
+                    DefinitePluralNoun (NounBase "child") (IrregularPlural "children")
+                        |> Noun
+                        |> Bold
+                        |> wordToString
+                        |> Expect.equal "<bold>the children</bold>"
+            , test "Verb" <|
+                \_ ->
+                    ThirdPersonNegative (Infinitive "eat") NoIrregularPast
+                        |> Verb
+                        |> Bold
+                        |> wordToString
+                        |> Expect.equal "<bold>doesn't eat</bold>"
+            , test "Puncutation" <|
+                \_ ->
+                    ExclamationPoint
+                        |> Punctuation
+                        |> Bold
+                        |> wordToString
+                        |> Expect.equal "<bold>!</bold>"
+            , test "Pronoun" <|
+                \_ ->
+                    Him
+                        |> Pronoun
+                        |> Bold
+                        |> wordToString
+                        |> Expect.equal "<bold>him</bold>"
+            , test "BeVerb" <|
+                \_ ->
+                    Was
+                        |> BeVerb
+                        |> Bold
+                        |> wordToString
+                        |> Expect.equal "<bold>was</bold>"
+            , test "NegativBeVerb" <|
+                \_ ->
+                    Was
+                        |> NegativeBeVerb
+                        |> Bold
+                        |> wordToString
+                        |> Expect.equal "<bold>was not</bold>"
+            , test "Preposition" <|
+                \_ ->
+                    SimplePreposition "with"
+                        |> Preposition
+                        |> Bold
+                        |> wordToString
+                        |> Expect.equal "<bold>with</bold>"
+            , test "Particle" <|
+                \_ ->
+                    AdverbialParticle "away"
+                        |> Particle
+                        |> Bold
+                        |> wordToString
+                        |> Expect.equal "<bold>away</bold>"
+            ]
+        , describe "Capital"
+            [ test "Noun" <|
+                \_ ->
+                    DefinitePluralNoun (NounBase "child") (IrregularPlural "children")
+                        |> Noun
+                        |> Capital
+                        |> wordToString
+                        |> Expect.equal "The children"
+            , test "Verb" <|
+                \_ ->
+                    ThirdPersonNegative (Infinitive "eat") NoIrregularPast
+                        |> Verb
+                        |> Capital
+                        |> wordToString
+                        |> Expect.equal "Doesn't eat"
+            , test "Puncutation" <|
+                \_ ->
+                    ExclamationPoint
+                        |> Punctuation
+                        |> Capital
+                        |> wordToString
+                        |> Expect.equal "!"
+            , test "Pronoun" <|
+                \_ ->
+                    Him
+                        |> Pronoun
+                        |> Capital
+                        |> wordToString
+                        |> Expect.equal "Him"
+            , test "BeVerb" <|
+                \_ ->
+                    Was
+                        |> BeVerb
+                        |> Capital
+                        |> wordToString
+                        |> Expect.equal "Was"
+            , test "NegativBeVerb" <|
+                \_ ->
+                    Was
+                        |> NegativeBeVerb
+                        |> Capital
+                        |> wordToString
+                        |> Expect.equal "Was not"
+            , test "Preposition" <|
+                \_ ->
+                    SimplePreposition "with"
+                        |> Preposition
+                        |> Capital
+                        |> wordToString
+                        |> Expect.equal "With"
+            , test "Particle" <|
+                \_ ->
+                    AdverbialParticle "away"
+                        |> Particle
+                        |> Capital
+                        |> wordToString
+                        |> Expect.equal "Away"
+            ]
+        , describe "BoldCapital"
+            [ test "Noun" <|
+                \_ ->
+                    DefinitePluralNoun (NounBase "child") (IrregularPlural "children")
+                        |> Noun
+                        |> BoldCapital
+                        |> wordToString
+                        |> Expect.equal "<bold>The children</bold>"
+            , test "Verb" <|
+                \_ ->
+                    ThirdPersonNegative (Infinitive "eat") NoIrregularPast
+                        |> Verb
+                        |> BoldCapital
+                        |> wordToString
+                        |> Expect.equal "<bold>Doesn't eat</bold>"
+            , test "Puncutation" <|
+                \_ ->
+                    ExclamationPoint
+                        |> Punctuation
+                        |> BoldCapital
+                        |> wordToString
+                        |> Expect.equal "<bold>!</bold>"
+            , test "Pronoun" <|
+                \_ ->
+                    Him
+                        |> Pronoun
+                        |> BoldCapital
+                        |> wordToString
+                        |> Expect.equal "<bold>Him</bold>"
+            , test "BeVerb" <|
+                \_ ->
+                    Was
+                        |> BeVerb
+                        |> BoldCapital
+                        |> wordToString
+                        |> Expect.equal "<bold>Was</bold>"
+            , test "NegativBeVerb" <|
+                \_ ->
+                    Was
+                        |> NegativeBeVerb
+                        |> BoldCapital
+                        |> wordToString
+                        |> Expect.equal "<bold>Was not</bold>"
+            , test "Preposition" <|
+                \_ ->
+                    SimplePreposition "with"
+                        |> Preposition
+                        |> BoldCapital
+                        |> wordToString
+                        |> Expect.equal "<bold>With</bold>"
+            , test "Particle" <|
+                \_ ->
+                    AdverbialParticle "away"
+                        |> Particle
+                        |> BoldCapital
+                        |> wordToString
+                        |> Expect.equal "<bold>Away</bold>"
+            ]
         ]
